@@ -1,7 +1,6 @@
 defmodule XDR.Type.IntTest do
   use ExUnit.Case
   require Math
-  import XDR.Type.Int.Validation
   alias XDR.Type.Int
   doctest XDR.Type.Int
 
@@ -9,25 +8,25 @@ defmodule XDR.Type.IntTest do
   @max_int Math.pow(2, 31) - 1
 
   test "is_valid?" do
-    assert is_valid?(0) == true
-    assert is_valid?(1) == true
-    assert is_valid?(-1) == true
-    assert is_valid?(@min_int) == true
-    assert is_valid?(@max_int) == true
+    assert Int.is_valid?(0) == true
+    assert Int.is_valid?(1) == true
+    assert Int.is_valid?(-1) == true
+    assert Int.is_valid?(@min_int) == true
+    assert Int.is_valid?(@max_int) == true
 
-    assert is_valid?(0.0) == false
-    assert is_valid?(-0.1) == false
-    assert is_valid?(-:math.pow(2, 31)) == false
-    assert is_valid?(:math.pow(2, 31) - 1) == false
-    assert is_valid?(@min_int - 1) == false
-    assert is_valid?(@max_int + 1) == false
-    assert is_valid?(true) == false
-    assert is_valid?(false) == false
-    assert is_valid?(nil) == false
-    assert is_valid?("0") == false
-    assert is_valid?({}) == false
-    assert is_valid?([]) == false
-    assert is_valid?([0]) == false
+    assert Int.is_valid?(0.0) == false
+    assert Int.is_valid?(-0.1) == false
+    assert Int.is_valid?(-:math.pow(2, 31)) == false
+    assert Int.is_valid?(:math.pow(2, 31) - 1) == false
+    assert Int.is_valid?(@min_int - 1) == false
+    assert Int.is_valid?(@max_int + 1) == false
+    assert Int.is_valid?(true) == false
+    assert Int.is_valid?(false) == false
+    assert Int.is_valid?(nil) == false
+    assert Int.is_valid?("0") == false
+    assert Int.is_valid?({}) == false
+    assert Int.is_valid?([]) == false
+    assert Int.is_valid?([0]) == false
   end
 
   test "encode" do
