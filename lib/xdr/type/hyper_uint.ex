@@ -30,7 +30,7 @@ defmodule XDR.Type.HyperUint do
   @doc """
   Encodes a hyper unsigned integer into an 8-byte binary
   """
-  @spec encode(__MODULE__.t) :: {:ok, <<_ :: 64>>} | {:error, :invalid | :out_of_bounds}
+  @spec encode(hyper_uint :: __MODULE__.t) :: {:ok, xdr :: <<_ :: 64>>} | {:error, :invalid | :out_of_bounds}
   def encode(hyper_uint) when not is_integer(hyper_uint), do: {:error, :invalid}
   def encode(hyper_uint) when not XDR.Type.HyperUint.Validation.is_valid?(hyper_uint), do: {:error, :out_of_bounds}
   def encode(hyper_uint), do: {:ok, <<hyper_uint :: unsigned-size(64)>>}
@@ -38,7 +38,7 @@ defmodule XDR.Type.HyperUint do
   @doc """
   Decodes a 8-byte binary into a hyper unsigned integer
   """
-  @spec decode(<<_ :: 64>>) :: {:ok, __MODULE__.t} | {:error, :invalid | :out_of_bounds}
+  @spec decode(xdr :: <<_ :: 64>>) :: {:ok, hyper_uint :: __MODULE__.t} | {:error, :invalid | :out_of_bounds}
   def decode(xdr) when not is_binary(xdr), do: {:error, :invalid}
   def decode(xdr) when bit_size(xdr) > 64, do: {:error, :out_of_bounds}
   def decode(<<hyper_uint :: unsigned-size(64)>>) when not is_integer(hyper_uint), do: {:error, :invalid}
