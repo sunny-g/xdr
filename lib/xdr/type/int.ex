@@ -24,7 +24,7 @@ defmodule XDR.Type.Int do
   @doc """
   Determines if a value is a valid 4-byte integer
   """
-  @spec is_valid?(__MODULE__.t) :: boolean
+  @spec is_valid?(int :: __MODULE__.t) :: boolean
   def is_valid?(int), do: XDR.Type.Int.Validation.is_valid?(int)
 
   @doc """

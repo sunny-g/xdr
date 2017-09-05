@@ -19,7 +19,7 @@ defmodule XDR.Type.Float do
   @doc """
   Determines if a value is a valid 4-byte float or integer
   """
-  @spec is_valid?(__MODULE__.t) :: boolean
+  @spec is_valid?(float :: __MODULE__.t) :: boolean
   def is_valid?(float), do: XDR.Type.Float.Validation.is_valid?(float)
 
   @doc """

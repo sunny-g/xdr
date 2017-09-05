@@ -24,7 +24,7 @@ defmodule XDR.Type.HyperInt do
   @doc """
   Determines if a value is a valid 8-byte hyper integer
   """
-  @spec is_valid?(__MODULE__.t) :: boolean
+  @spec is_valid?(hyper_int :: __MODULE__.t) :: boolean
   def is_valid?(hyper_int), do: XDR.Type.HyperInt.Validation.is_valid?(hyper_int)
 
   @doc """

@@ -24,7 +24,7 @@ defmodule XDR.Type.Uint do
   @doc """
   Determines if a value is a valid 4-byte unsigned integer
   """
-  @spec is_valid?(__MODULE__.t) :: boolean
+  @spec is_valid?(uint :: __MODULE__.t) :: boolean
   def is_valid?(uint), do: XDR.Type.Uint.Validation.is_valid?(uint)
 
   @doc """
