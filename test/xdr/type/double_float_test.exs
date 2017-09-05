@@ -7,7 +7,7 @@ defmodule XDR.Type.DoubleFloatTest do
     assert DoubleFloat.is_valid?(0) == true
     assert DoubleFloat.is_valid?(-1) == true
     assert DoubleFloat.is_valid?(1.0) == true
-    assert DoubleFloat.is_valid?(100000.0) == true
+    assert DoubleFloat.is_valid?(100000000.0) == true
 
     assert DoubleFloat.is_valid?(:infinity) == false
     assert DoubleFloat.is_valid?(nil) == false
