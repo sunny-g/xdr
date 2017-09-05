@@ -28,7 +28,7 @@ defmodule XDR.Type.Enum do
   @spec decode(xdr :: <<_ :: 32>>, enum :: __MODULE__.t) :: {:ok, name :: atom} | {:error, :invalid}
   def decode(xdr, enum) do
     val = Int.decode(xdr) |> elem(1)
-    case Enum.find(enum, fn {_, v} -> v == val end) do
+    case Enum.find(enum, fn {_, v} -> v === val end) do
       {k, _} -> {:ok, k}
       nil -> {:error, :invalid}
     end
