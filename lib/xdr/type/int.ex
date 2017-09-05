@@ -33,7 +33,7 @@ defmodule XDR.Type.Int do
   @spec encode(int :: __MODULE__.t) :: {:ok, xdr :: <<_ :: 32>>} | {:error, :invalid | :out_of_bounds}
   def encode(int) when not is_integer(int), do: {:error, :invalid}
   def encode(int) when not XDR.Type.Int.Validation.is_valid?(int), do: {:error, :out_of_bounds}
-  def encode(int), do: {:ok, <<int :: signed-size(32)>>}
+  def encode(int), do: {:ok, <<int :: big-signed-integer-size(32)>>}
 
   @doc """
   Decodes a 4-byte binary into an integer
@@ -41,7 +41,6 @@ defmodule XDR.Type.Int do
   @spec decode(xdr :: <<_ :: 32>>) :: {:ok, int :: __MODULE__.t} | {:error, :invalid | :out_of_bounds}
   def decode(xdr) when not is_binary(xdr), do: {:error, :invalid}
   def decode(xdr) when bit_size(xdr) > 32, do: {:error, :out_of_bounds}
-  def decode(<<int :: signed-size(32)>>) when not is_integer(int), do: {:error, :invalid}
-  def decode(<<int :: signed-size(32)>>), do: {:ok, int}
+  def decode(<<int :: big-signed-integer-size(32)>>), do: {:ok, int}
   def decode(_), do: {:error, :invalid}
 end
