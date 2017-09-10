@@ -19,8 +19,11 @@ defmodule XDR.Type.VariableOpaque do
   import XDR.Type.VariableOpaque.Validation
   alias XDR.Type.Uint
 
+  @typedoc """
+  A binary of max-length 2^32 - 1
+  """
   @type t :: binary
-  @type max :: Uint.t
+  @type max_len :: Uint.t
   @type xdr :: <<_ :: _*32>>
   @type decode_error :: {:error,
     :invalid |
@@ -34,21 +37,24 @@ defmodule XDR.Type.VariableOpaque do
   @max_len Math.pow(2, 32) - 1
 
   @doc """
+  Determines if a value is a binary of a valid length
   """
-  @spec is_valid?(any, max_len :: __MODULE__.max) :: boolean
+  @spec is_valid?(any, max_len :: __MODULE__.max_len) :: boolean
   def is_valid?(opaque, max_len \\ @max_len)
   def is_valid?(opaque, max_len), do: is_valid_variable_opaque?(opaque, max_len)
 
   @doc """
+  Encodes a valid variable opaque binary, prepending the 4-byte length of the binary and appending any necessary padding
   """
-  @spec encode(opaque :: __MODULE__.t, max_len :: __MODULE__.max) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(opaque :: __MODULE__.t, max_len :: __MODULE__.max_len) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
   def encode(opaque, max_len \\ @max_len)
   def encode(opaque, max_len) when not is_valid_variable_opaque?(opaque, max_len), do: {:error, :invalid}
   def encode(opaque, _), do: {:ok, encode_opaque(opaque, required_padding(opaque))}
 
   @doc """
+  Decodes a valid variable opaque xdr binary, removing the 4-byte length and any provided padding
   """
-  @spec decode(xdr :: __MODULE__.xdr, max_len :: __MODULE__.max) :: {:ok, opaque :: __MODULE__.t} | __MODULE__.decode_error
+  @spec decode(xdr :: __MODULE__.xdr, max_len :: __MODULE__.max_len) :: {:ok, opaque :: __MODULE__.t} | __MODULE__.decode_error
   def decode(xdr, max_len \\ @max_len)
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(_, max_len) when max_len > @max_len, do: {:error, :max_length_too_large}
