@@ -33,12 +33,12 @@ defmodule XDR.Type.HyperIntTest do
     assert HyperInt.encode(0) == {:ok, <<0, 0, 0, 0, 0, 0, 0, 0>>}
     assert HyperInt.encode(1) == {:ok, <<0, 0, 0, 0, 0, 0, 0, 1>>}
     assert HyperInt.encode(-1) == {:ok, <<255, 255, 255, 255, 255, 255, 255, 255>>}
-    assert @min_hyper_int |> HyperInt.encode == {:ok, <<128, 0, 0, 0, 0, 0, 0, 0>>}
-    assert @max_hyper_int |> HyperInt.encode == {:ok, <<127, 255, 255, 255, 255, 255, 255, 255>>}
+    assert HyperInt.encode(@min_hyper_int) == {:ok, <<128, 0, 0, 0, 0, 0, 0, 0>>}
+    assert HyperInt.encode(@max_hyper_int) == {:ok, <<127, 255, 255, 255, 255, 255, 255, 255>>}
 
     assert HyperInt.encode(0.1) == {:error, :invalid}
-    assert @min_hyper_int - 1 |> HyperInt.encode == {:error, :out_of_bounds}
-    assert @max_hyper_int + 1 |> HyperInt.encode == {:error, :out_of_bounds}
+    assert HyperInt.encode(@min_hyper_int - 1) == {:error, :out_of_bounds}
+    assert HyperInt.encode(@max_hyper_int + 1) == {:error, :out_of_bounds}
   end
 
   test "decode" do
@@ -49,7 +49,7 @@ defmodule XDR.Type.HyperIntTest do
     assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, @max_hyper_int}
 
     assert HyperInt.decode("0") == {:error, :invalid}
-    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:error, :out_of_bounds}
-    assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255, 255>>) == {:error, :out_of_bounds}
+    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:error, :invalid}
+    assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255, 255>>) == {:error, :invalid}
   end
 end

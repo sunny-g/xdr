@@ -23,8 +23,12 @@ defmodule XDR.Type.BoolTest do
   end
 
   test "decode" do
-    assert Int.decode(0) == Bool.decode(false)
-    assert Int.decode(1) == Bool.decode(true)
+    assert Int.encode(0)
+      |> elem(1)
+      |> Bool.decode == {:ok, false}
+    assert Int.encode(1)
+      |> elem(1)
+      |> Bool.decode == {:ok, true}
 
     assert Int.decode(2) == {:error, :invalid}
   end

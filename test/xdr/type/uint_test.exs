@@ -29,18 +29,21 @@ defmodule XDR.Type.UintTest do
 
   test "encode" do
     assert Uint.encode(1) == {:ok, <<0, 0, 0, 1>>}
-    assert @min_uint |> Uint.encode == {:ok, <<0, 0, 0, 0>>}
-    assert @max_uint |> Uint.encode == {:ok, <<255, 255, 255, 255>>}
+    assert Uint.encode(@min_uint) == {:ok, <<0, 0, 0, 0>>}
+    assert Uint.encode(@max_uint) == {:ok, <<255, 255, 255, 255>>}
 
     assert Uint.encode(0.1) == {:error, :invalid}
     assert Uint.encode(@min_uint - 1) == {:error, :out_of_bounds}
     assert Uint.encode(@max_uint + 1) == {:error, :out_of_bounds}
-
   end
 
   test "decode" do
     assert Uint.decode(<<0, 0, 0, 1>>) == {:ok, 1}
     assert Uint.decode(<<0, 0, 0, 0>>) == {:ok, @min_uint}
     assert Uint.decode(<<255, 255, 255, 255>>) == {:ok, @max_uint}
+
+    assert Uint.decode("0") == {:error, :invalid}
+    assert Uint.decode(<<0, 0, 0, 0, 0>>) == {:error, :invalid}
+    assert Uint.decode(<<127, 255, 255, 255, 255>>) == {:error, :invalid}
   end
 end

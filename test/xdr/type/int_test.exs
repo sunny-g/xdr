@@ -33,12 +33,12 @@ defmodule XDR.Type.IntTest do
     assert Int.encode(0) == {:ok, <<0, 0, 0, 0>>}
     assert Int.encode(1) == {:ok, <<0, 0, 0, 1>>}
     assert Int.encode(-1) == {:ok, <<255, 255, 255, 255>>}
-    assert @min_int |> Int.encode == {:ok, <<128, 0, 0, 0>>}
-    assert @max_int |> Int.encode == {:ok, <<127, 255, 255, 255>>}
+    assert Int.encode(@min_int) == {:ok, <<128, 0, 0, 0>>}
+    assert Int.encode(@max_int) == {:ok, <<127, 255, 255, 255>>}
 
     assert Int.encode(0.1) == {:error, :invalid}
-    assert @min_int - 1 |> Int.encode == {:error, :out_of_bounds}
-    assert @max_int + 1 |> Int.encode == {:error, :out_of_bounds}
+    assert Int.encode(@min_int - 1) == {:error, :out_of_bounds}
+    assert Int.encode(@max_int + 1) == {:error, :out_of_bounds}
   end
 
   test "decode" do
@@ -49,7 +49,7 @@ defmodule XDR.Type.IntTest do
     assert Int.decode(<<127, 255, 255, 255>>) == {:ok, @max_int}
 
     assert Int.decode("0") == {:error, :invalid}
-    assert Int.decode(<<0, 0, 0, 0, 0>>) == {:error, :out_of_bounds}
-    assert Int.decode(<<127, 255, 255, 255, 255>>) == {:error, :out_of_bounds}
+    assert Int.decode(<<0, 0, 0, 0, 0>>) == {:error, :invalid}
+    assert Int.decode(<<127, 255, 255, 255, 255>>) == {:error, :invalid}
   end
 end

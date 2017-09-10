@@ -29,8 +29,8 @@ defmodule XDR.Type.HyperUintTest do
 
   test "encode" do
     assert HyperUint.encode(1) == {:ok, <<0, 0, 0, 0, 0, 0, 0, 1>>}
-    assert @min_hyper_uint |> HyperUint.encode == {:ok, <<0, 0, 0, 0, 0, 0, 0, 0>>}
-    assert @max_hyper_uint |> HyperUint.encode == {:ok, <<255, 255, 255, 255, 255, 255, 255, 255>>}
+    assert HyperUint.encode(@min_hyper_uint) == {:ok, <<0, 0, 0, 0, 0, 0, 0, 0>>}
+    assert HyperUint.encode(@max_hyper_uint) == {:ok, <<255, 255, 255, 255, 255, 255, 255, 255>>}
 
     assert HyperUint.encode(0.1) == {:error, :invalid}
     assert HyperUint.encode(@min_hyper_uint - 1) == {:error, :out_of_bounds}
