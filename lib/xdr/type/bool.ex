@@ -7,6 +7,9 @@ defmodule XDR.Type.Bool do
   @type t :: boolean
   @type xdr :: <<_ :: 32>>
 
+  @doc false
+  def length, do: Int.length
+
   @doc """
   Determines if value is a valid boolean
   """

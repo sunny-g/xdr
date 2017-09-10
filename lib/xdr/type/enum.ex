@@ -10,8 +10,11 @@ defmodule XDR.Type.Enum do
   }
   @type name :: atom
   @type xdr :: <<_ :: 32>>
-  @type decode_error :: {:error, :invalid | :invalid_xdr | :invalid_enum}
+  @type decode_error :: {:error, :invalid_xdr | :invalid_enum}
   @type encode_error :: {:error, :invalid | :invalid_name | :invalid_enum}
+
+  @doc false
+  def length, do: Int.length
 
   @doc """
   Determines if an atom name is a valid according to the enum spec
@@ -42,7 +45,7 @@ defmodule XDR.Type.Enum do
     val = Int.decode(xdr) |> elem(1)
     case Enum.find(enum, fn {_, v} -> match?(^v, val) end) do
       {k, _} -> {:ok, k}
-      nil -> {:error, :invalid}
+      nil -> {:error, :invalid_enum}
     end
   end
 end

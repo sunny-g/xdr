@@ -14,6 +14,8 @@ defmodule XDR.Type.HyperUint.Validation do
 end
 
 defmodule XDR.Type.HyperUint do
+  @behaviour XDR.Type.Base
+
   import XDR.Util.Macros
   import XDR.Type.HyperUint.Validation
 
@@ -23,7 +25,10 @@ defmodule XDR.Type.HyperUint do
   @type t :: 0..18446744073709551615
   @type xdr :: <<_ :: 64>>
 
-  @size 64
+  @length 64
+
+  @doc false
+  def length, do: @length
 
   @doc """
   Determines if a value is a valid 8-byte hyper unsigned integer
@@ -37,14 +42,14 @@ defmodule XDR.Type.HyperUint do
   @spec encode(hyper_uint :: __MODULE__.t) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid | :out_of_bounds}
   def encode(hyper_uint) when not is_integer(hyper_uint), do: {:error, :invalid}
   def encode(hyper_uint) when not is_valid_hyper_uint?(hyper_uint), do: {:error, :out_of_bounds}
-  def encode(hyper_uint), do: {:ok, <<hyper_uint :: big-unsigned-integer-size(@size)>>}
+  def encode(hyper_uint), do: {:ok, <<hyper_uint :: big-unsigned-integer-size(@length)>>}
 
   @doc """
   Decodes a 8-byte binary into a hyper unsigned integer
   """
   @spec decode(xdr :: __MODULE__.xdr) :: {:ok, hyper_uint :: __MODULE__.t} | {:error, :invalid}
-  def decode(xdr) when bit_size(xdr) !== @size, do: {:error, :invalid}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(<<hyper_uint :: big-unsigned-integer-size(@size)>>), do: {:ok, hyper_uint}
+  def decode(xdr) when bit_size(xdr) !== @length, do: {:error, :invalid}
+  def decode(<<hyper_uint :: big-unsigned-integer-size(@length)>>), do: {:ok, hyper_uint}
   def decode(_), do: {:error, :invalid}
 end

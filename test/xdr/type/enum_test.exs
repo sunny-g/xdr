@@ -46,7 +46,7 @@ defmodule XDR.Type.EnumTest do
 
     assert Int.encode(2)
       |> elem(1)
-      |> Enum.decode(@color_enum) == {:error, :invalid}
+      |> Enum.decode(@color_enum) == {:error, :invalid_enum}
     assert Enum.decode(<<0, 0, 1>>, @color_enum) == {:error, :invalid_xdr}
   end
 end
