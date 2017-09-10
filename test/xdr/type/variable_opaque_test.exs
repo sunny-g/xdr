@@ -30,6 +30,7 @@ defmodule XDR.Type.VariableOpaqueTest do
     assert VariableOpaque.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>, 2) == {:ok, <<1>>}
     assert VariableOpaque.decode(<<0, 0, 0, 2, 0, 1, 0, 0>>, 2) == {:ok, <<0, 1>>}
 
+    assert VariableOpaque.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
     assert VariableOpaque.decode(<<255, 255, 255, 255, 0, 0, 0, 0>>, Math.pow(2, 32)) == {:error, :max_length_too_large}
     assert VariableOpaque.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>, 2) == {:error, :xdr_length_exceeds_max}
     assert VariableOpaque.decode(<<255, 255, 255, 255, 0, 0, 0, 0>>, Math.pow(2, 32) - 1) == {:error, :invalid_xdr_length}
