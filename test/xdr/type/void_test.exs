@@ -3,14 +3,14 @@ defmodule XDR.Type.VoidTest do
   alias XDR.Type.Void
   doctest XDR.Type.Void
 
-  test "is_valid?" do
-    assert Void.is_valid?(nil) == true
+  test "valid?" do
+    assert Void.valid?(nil) == true
 
-    assert Void.is_valid?(false) == false
-    assert Void.is_valid?(0) == false
-    assert Void.is_valid?("0") == false
-    assert Void.is_valid?([]) == false
-    assert Void.is_valid?({}) == false
+    assert Void.valid?(false) == false
+    assert Void.valid?(0) == false
+    assert Void.valid?("0") == false
+    assert Void.valid?([]) == false
+    assert Void.valid?({}) == false
   end
 
   test "encode" do

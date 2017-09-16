@@ -33,8 +33,8 @@ defmodule XDR.Type.Int do
   @doc """
   Determines if a value is a valid 4-byte integer
   """
-  @spec is_valid?(any) :: boolean
-  def is_valid?(int), do: is_valid_int?(int)
+  @spec valid?(any) :: boolean
+  def valid?(int), do: is_valid_int?(int)
 
   @doc """
   Encodes an integer into a 4-byte binary

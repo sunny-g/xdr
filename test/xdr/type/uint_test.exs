@@ -7,24 +7,24 @@ defmodule XDR.Type.UintTest do
   @min_uint 0
   @max_uint Math.pow(2, 32) - 1
 
-  test "is_valid?" do
-    assert Uint.is_valid?(1) == true
-    assert Uint.is_valid?(@min_uint) == true
-    assert Uint.is_valid?(@max_uint) == true
+  test "valid?" do
+    assert Uint.valid?(1) == true
+    assert Uint.valid?(@min_uint) == true
+    assert Uint.valid?(@max_uint) == true
 
-    assert Uint.is_valid?(-1) == false
-    assert Uint.is_valid?(0.0) == false
-    assert Uint.is_valid?(-0.1) == false
-    assert Uint.is_valid?(:math.pow(2, 32) - 1) == false
-    assert Uint.is_valid?(@min_uint - 1) == false
-    assert Uint.is_valid?(@max_uint + 1) == false
-    assert Uint.is_valid?(true) == false
-    assert Uint.is_valid?(false) == false
-    assert Uint.is_valid?(nil) == false
-    assert Uint.is_valid?("0") == false
-    assert Uint.is_valid?({}) == false
-    assert Uint.is_valid?([]) == false
-    assert Uint.is_valid?([0]) == false
+    assert Uint.valid?(-1) == false
+    assert Uint.valid?(0.0) == false
+    assert Uint.valid?(-0.1) == false
+    assert Uint.valid?(:math.pow(2, 32) - 1) == false
+    assert Uint.valid?(@min_uint - 1) == false
+    assert Uint.valid?(@max_uint + 1) == false
+    assert Uint.valid?(true) == false
+    assert Uint.valid?(false) == false
+    assert Uint.valid?(nil) == false
+    assert Uint.valid?("0") == false
+    assert Uint.valid?({}) == false
+    assert Uint.valid?([]) == false
+    assert Uint.valid?([0]) == false
   end
 
   test "encode" do

@@ -10,7 +10,7 @@ defmodule XDR.Type.Base do
   @doc """
   Determines if a value is a valid XDR type
   """
-  @callback is_valid?(any) :: boolean
+  @callback valid?(any) :: boolean
 
   @doc """
   Encodes a native type to an XDR binary

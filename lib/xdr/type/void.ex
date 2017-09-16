@@ -7,9 +7,9 @@ defmodule XDR.Type.Void do
   @doc """
   Determines if value is nil or not
   """
-  @spec is_valid?(__MODULE__.t) :: boolean
-  def is_valid?(nil), do: true
-  def is_valid?(_), do: false
+  @spec valid?(__MODULE__.t) :: boolean
+  def valid?(nil), do: true
+  def valid?(_), do: false
 
   @doc """
   Encodes nil to an empty binary

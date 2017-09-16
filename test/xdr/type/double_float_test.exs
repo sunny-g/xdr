@@ -3,14 +3,14 @@ defmodule XDR.Type.DoubleFloatTest do
   alias XDR.Type.DoubleFloat
   doctest XDR.Type.DoubleFloat
 
-  test "is_valid?" do
-    assert DoubleFloat.is_valid?(0) == true
-    assert DoubleFloat.is_valid?(-1) == true
-    assert DoubleFloat.is_valid?(1.0) == true
-    assert DoubleFloat.is_valid?(100000000.0) == true
+  test "valid?" do
+    assert DoubleFloat.valid?(0) == true
+    assert DoubleFloat.valid?(-1) == true
+    assert DoubleFloat.valid?(1.0) == true
+    assert DoubleFloat.valid?(100000000.0) == true
 
-    assert DoubleFloat.is_valid?(:infinity) == false
-    assert DoubleFloat.is_valid?(nil) == false
+    assert DoubleFloat.valid?(:infinity) == false
+    assert DoubleFloat.valid?(nil) == false
   end
 
   test "encode" do

@@ -4,49 +4,67 @@ defmodule XDR.Type.EnumTest do
   alias XDR.Type.Int
   doctest XDR.Type.Enum
 
-  @color_enum %{
-    red: 0,
-    green: 1,
-    evenMoreGreen: 3,
-  }
+  defmodule XDR.Type.EnumTest.DummyEnum do
+    use Enum, spec: [
+      red: 0,
+      green: 1,
+      evenMoreGreen: 3,
+    ]
+  end
 
-  test "is_valid?" do
-    assert Enum.is_valid?(:red, @color_enum) == true
-    assert Enum.is_valid?(:green, @color_enum) == true
-    assert Enum.is_valid?(:evenMoreGreen, @color_enum) == true
+  defmodule XDR.Type.EnumTest.InvalidSpec do
+    import CompileTimeAssertions
 
-    assert Enum.is_valid?(:blue, @color_enum) == false
-    assert Enum.is_valid?("red", @color_enum) == false
-    assert Enum.is_valid?("green", @color_enum) == false
-    assert Enum.is_valid?("evenMoreGreen", @color_enum) == false
-    assert Enum.is_valid?(true, @color_enum) == false
-    assert Enum.is_valid?(nil, @color_enum) == false
-    assert Enum.is_valid?([], @color_enum) == false
-    assert Enum.is_valid?({}, @color_enum) == false
+    assert_compile_time_raise RuntimeError, "invalid Enum spec", fn ->
+      use XDR.Type.Enum, spec: %{}
+    end
+  end
+
+  defmodule XDR.Type.EnumTest.ExceedMax do
+    import CompileTimeAssertions
+
+    assert_compile_time_raise RuntimeError, "all Enum values must be numbers", fn ->
+      use XDR.Type.Enum, spec: [a: "a"]
+    end
+  end
+
+  test "valid?" do
+    assert XDR.Type.EnumTest.DummyEnum.valid?(:red) == true
+    assert XDR.Type.EnumTest.DummyEnum.valid?(:green) == true
+    assert XDR.Type.EnumTest.DummyEnum.valid?(:evenMoreGreen) == true
+
+    assert XDR.Type.EnumTest.DummyEnum.valid?(:blue) == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?("red") == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?("green") == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?("evenMoreGreen") == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?(true) == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?(nil) == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?([]) == false
+    assert XDR.Type.EnumTest.DummyEnum.valid?({}) == false
   end
 
   test "encode" do
-    assert Enum.encode(:red, @color_enum) == Int.encode(0)
-    assert Enum.encode(:green, @color_enum) == Int.encode(1)
-    assert Enum.encode(:evenMoreGreen, @color_enum) == Int.encode(3)
+    assert XDR.Type.EnumTest.DummyEnum.encode(:red) == Int.encode(0)
+    assert XDR.Type.EnumTest.DummyEnum.encode(:green) == Int.encode(1)
+    assert XDR.Type.EnumTest.DummyEnum.encode(:evenMoreGreen) == Int.encode(3)
 
-    assert Enum.encode(:blue, @color_enum) == {:error, :invalid}
+    assert XDR.Type.EnumTest.DummyEnum.encode(:blue) == {:error, :invalid}
   end
 
   test "decode" do
     assert Int.encode(0)
       |> elem(1)
-      |> Enum.decode(@color_enum) == {:ok, :red}
+      |> XDR.Type.EnumTest.DummyEnum.decode == {:ok, :red}
     assert Int.encode(1)
       |> elem(1)
-      |> Enum.decode(@color_enum) == {:ok, :green}
+      |> XDR.Type.EnumTest.DummyEnum.decode == {:ok, :green}
     assert Int.encode(3)
       |> elem(1)
-      |> Enum.decode(@color_enum) == {:ok, :evenMoreGreen}
+      |> XDR.Type.EnumTest.DummyEnum.decode == {:ok, :evenMoreGreen}
 
     assert Int.encode(2)
       |> elem(1)
-      |> Enum.decode(@color_enum) == {:error, :invalid_enum}
-    assert Enum.decode(<<0, 0, 1>>, @color_enum) == {:error, :invalid_xdr}
+      |> XDR.Type.EnumTest.DummyEnum.decode == {:error, :invalid_enum}
+    assert XDR.Type.EnumTest.DummyEnum.decode(<<0, 0, 1>>) == {:error, :invalid_xdr}
   end
 end

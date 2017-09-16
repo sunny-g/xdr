@@ -33,8 +33,8 @@ defmodule XDR.Type.Uint do
   @doc """
   Determines if a value is a valid 4-byte unsigned integer
   """
-  @spec is_valid?(any) :: boolean
-  def is_valid?(uint), do: is_valid_uint?(uint)
+  @spec valid?(any) :: boolean
+  def valid?(uint), do: is_valid_uint?(uint)
 
   @doc """
   Encodes an unsigned integer into a 4-byte binary

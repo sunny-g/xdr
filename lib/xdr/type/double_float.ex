@@ -26,8 +26,8 @@ defmodule XDR.Type.DoubleFloat do
   @doc """
   Determines if a value is a valid 8-byte float or integer
   """
-  @spec is_valid?(any) :: boolean
-  def is_valid?(float), do: is_valid_double_float?(float)
+  @spec valid?(any) :: boolean
+  def valid?(float), do: is_valid_double_float?(float)
 
   @doc """
   Encodes a double-precision float or integer into an 8-byte binary

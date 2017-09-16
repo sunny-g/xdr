@@ -33,8 +33,8 @@ defmodule XDR.Type.HyperUint do
   @doc """
   Determines if a value is a valid 8-byte hyper unsigned integer
   """
-  @spec is_valid?(any) :: boolean
-  def is_valid?(hyper_uint), do: is_valid_hyper_uint?(hyper_uint)
+  @spec valid?(any) :: boolean
+  def valid?(hyper_uint), do: is_valid_hyper_uint?(hyper_uint)
 
   @doc """
   Encodes a hyper unsigned integer into an 8-byte binary

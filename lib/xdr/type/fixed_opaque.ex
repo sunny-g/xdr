@@ -20,11 +20,28 @@ defmodule XDR.Type.FixedOpaque do
   @type xdr :: <<_ :: _*32>>
   @type decode_error :: {:error, :invalid | :out_of_bounds}
 
+  defmacro __using__(len: len) do
+    if not (is_integer(len) and len >= 0) do
+      raise "invalid length"
+    end
+
+    quote do
+      @behaviour XDR.Type.Base
+
+      def length, do: unquote(len)
+      def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(len))
+      def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(len))
+      def decode(opaque), do: unquote(__MODULE__).decode(opaque, unquote(len))
+
+      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
+    end
+  end
+
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec is_valid?(any, len :: __MODULE__.len) :: boolean
-  def is_valid?(opaque, len), do: is_valid_fixed_opaque?(opaque, len)
+  @spec valid?(any, len :: __MODULE__.len) :: boolean
+  def valid?(opaque, len), do: is_valid_fixed_opaque?(opaque, len)
 
   @doc """
   Encodes a fixed opaque binary by appending any necessary padding

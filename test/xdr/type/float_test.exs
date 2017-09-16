@@ -3,14 +3,14 @@ defmodule XDR.Type.FloatTest do
   alias XDR.Type.Float
   doctest XDR.Type.Float
 
-  test "is_valid?" do
-    assert Float.is_valid?(0) == true
-    assert Float.is_valid?(-1) == true
-    assert Float.is_valid?(1.0) == true
-    assert Float.is_valid?(100000.0) == true
+  test "valid?" do
+    assert Float.valid?(0) == true
+    assert Float.valid?(-1) == true
+    assert Float.valid?(1.0) == true
+    assert Float.valid?(100000.0) == true
 
-    assert Float.is_valid?(:infinity) == false
-    assert Float.is_valid?(nil) == false
+    assert Float.valid?(:infinity) == false
+    assert Float.valid?(nil) == false
   end
 
   test "encode" do

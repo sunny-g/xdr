@@ -26,8 +26,8 @@ defmodule XDR.Type.Float do
   @doc """
   Determines if a value is a valid 4-byte float or integer
   """
-  @spec is_valid?(any) :: boolean
-  def is_valid?(float), do: is_valid_float?(float)
+  @spec valid?(any) :: boolean
+  def valid?(float), do: is_valid_float?(float)
 
   @doc """
   Encodes a single-precision float or integer into a 4-byte binary

@@ -7,24 +7,24 @@ defmodule XDR.Type.HyperUintTest do
   @min_hyper_uint 0
   @max_hyper_uint Math.pow(2, 64) - 1
 
-  test "is_valid?" do
-    assert HyperUint.is_valid?(1) == true
-    assert HyperUint.is_valid?(@min_hyper_uint) == true
-    assert HyperUint.is_valid?(@max_hyper_uint) == true
+  test "valid?" do
+    assert HyperUint.valid?(1) == true
+    assert HyperUint.valid?(@min_hyper_uint) == true
+    assert HyperUint.valid?(@max_hyper_uint) == true
 
-    assert HyperUint.is_valid?(-1) == false
-    assert HyperUint.is_valid?(0.0) == false
-    assert HyperUint.is_valid?(-0.1) == false
-    assert HyperUint.is_valid?(:math.pow(2, 64) - 1) == false
-    assert HyperUint.is_valid?(@min_hyper_uint - 1) == false
-    assert HyperUint.is_valid?(@max_hyper_uint + 1) == false
-    assert HyperUint.is_valid?(true) == false
-    assert HyperUint.is_valid?(false) == false
-    assert HyperUint.is_valid?(nil) == false
-    assert HyperUint.is_valid?("0") == false
-    assert HyperUint.is_valid?({}) == false
-    assert HyperUint.is_valid?([]) == false
-    assert HyperUint.is_valid?([0]) == false
+    assert HyperUint.valid?(-1) == false
+    assert HyperUint.valid?(0.0) == false
+    assert HyperUint.valid?(-0.1) == false
+    assert HyperUint.valid?(:math.pow(2, 64) - 1) == false
+    assert HyperUint.valid?(@min_hyper_uint - 1) == false
+    assert HyperUint.valid?(@max_hyper_uint + 1) == false
+    assert HyperUint.valid?(true) == false
+    assert HyperUint.valid?(false) == false
+    assert HyperUint.valid?(nil) == false
+    assert HyperUint.valid?("0") == false
+    assert HyperUint.valid?({}) == false
+    assert HyperUint.valid?([]) == false
+    assert HyperUint.valid?([0]) == false
   end
 
   test "encode" do

@@ -28,7 +28,7 @@ defmodule XDR.Type.VariableOpaque do
   @type decode_error :: {:error,
     :invalid |
     :max_length_too_large |
-    :xdr_length_exceeds_max |
+    :xdr_length_exceeds_defined_max |
     :invalid_xdr_length |
     :invalid_padding
   }
@@ -36,12 +36,31 @@ defmodule XDR.Type.VariableOpaque do
   @len_size 32
   @max_len Math.pow(2, 32) - 1
 
+  defmacro __using__(opts \\ []) do
+    len = Keyword.get(opts, :len, @max_len)
+
+    if len > @max_len do
+      raise "max length too large"
+    end
+
+    quote do
+      @behaviour XDR.Type.Base
+
+      def length, do: unquote(len)
+      def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(len))
+      def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(len))
+      def decode(opaque), do: unquote(__MODULE__).decode(opaque, unquote(len))
+
+      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
+    end
+  end
+
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec is_valid?(any, max_len :: __MODULE__.max_len) :: boolean
-  def is_valid?(opaque, max_len \\ @max_len)
-  def is_valid?(opaque, max_len), do: is_valid_variable_opaque?(opaque, max_len)
+  @spec valid?(any, max_len :: __MODULE__.max_len) :: boolean
+  def valid?(opaque, max_len \\ @max_len)
+  def valid?(opaque, max_len), do: is_valid_variable_opaque?(opaque, max_len)
 
   @doc """
   Encodes a valid variable opaque binary, prepending the 4-byte length of the binary and appending any necessary padding
@@ -59,7 +78,7 @@ defmodule XDR.Type.VariableOpaque do
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(_, max_len) when max_len > @max_len, do: {:error, :max_length_too_large}
   def decode(<<defined_len :: big-unsigned-integer-size(@len_size), _ :: binary>>, max_len)
-      when defined_len > max_len, do: {:error, :xdr_length_exceeds_max}
+      when defined_len > max_len, do: {:error, :xdr_length_exceeds_defined_max}
   def decode(<<defined_len :: big-unsigned-integer-size(@len_size), rest :: binary>>, _)
       when defined_len > byte_size(rest), do: {:error, :invalid_xdr_length}
   def decode(<<defined_len :: big-unsigned-integer-size(@len_size), rest :: binary>>, _) do
