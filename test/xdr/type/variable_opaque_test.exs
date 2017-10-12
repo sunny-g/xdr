@@ -35,6 +35,7 @@ defmodule XDR.Type.VariableOpaqueTest do
     assert Len2.valid?(<<>>) == true
     assert Len2.valid?(<<0>>) == true
     assert Len2.valid?(<<0, 0>>) == true
+    assert Len3.valid?(<<0, 0, 0>>) == true
 
     assert Len1.valid?(<<0, 0>>) == false
     assert Len2.valid?(<<0, 0, 0>>) == false
@@ -49,6 +50,8 @@ defmodule XDR.Type.VariableOpaqueTest do
     assert Len2.encode(<<0>>) == {:ok, <<0, 0, 0, 1, 0, 0, 0, 0>>}
     assert Len2.encode(<<1>>) == {:ok, <<0, 0, 0, 1, 1, 0, 0, 0>>}
     assert Len2.encode(<<0, 1>>) == {:ok, <<0, 0, 0, 2, 0, 1, 0, 0>>}
+    assert Len3.encode(<<0, 0, 1>>) == {:ok, <<0, 0, 0, 3, 0, 0, 1, 0>>}
+    assert Len4.encode(<<0, 0, 1, 0>>) == {:ok, <<0, 0, 0, 4, 0, 0, 1, 0>>}
   end
 
   test "decode" do
@@ -56,6 +59,8 @@ defmodule XDR.Type.VariableOpaqueTest do
     assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, <<0>>}
     assert Len2.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>) == {:ok, <<1>>}
     assert Len2.decode(<<0, 0, 0, 2, 0, 1, 0, 0>>) == {:ok, <<0, 1>>}
+    assert Len3.decode(<<0, 0, 0, 3, 0, 0, 1, 0>>) == {:ok, <<0, 0, 1>>}
+    assert Len4.decode(<<0, 0, 0, 4, 0, 0, 1, 0>>) == {:ok, <<0, 0, 1, 0>>}
 
     assert Len2.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
     assert Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}

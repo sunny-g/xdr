@@ -30,8 +30,9 @@ defmodule XDR.Type.FixedOpaqueTest do
   alias XDR.Type.FixedOpaqueTest.{Len1, Len2, Len3, Len5}
 
   test "valid?" do
-    assert Len3.valid?(<<0, 0, 0>>) == true
+    assert Len1.valid?(<<1>>) == true
     assert Len2.valid?(<<0, 1>>) == true
+    assert Len3.valid?(<<0, 0, 0>>) == true
 
     assert Len1.valid?(<<0, 0>>) == false
     assert Len2.valid?(<<0, 0, 0>>) == false

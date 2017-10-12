@@ -40,6 +40,7 @@ defmodule XDR.Type.FixedArrayTest do
   test "encode" do
     assert Len0.encode([]) == {:ok, <<>>}
     assert Len1.encode([0]) == {:ok, <<0, 0, 0, 0>>}
+    assert Len1.encode([1]) == {:ok, <<0, 0, 0, 1>>}
     assert Len2.encode([1, 2]) == {:ok, <<0, 0, 0, 1, 0, 0, 0, 2>>}
     assert Len2.encode([3, 4]) == {:ok, <<0, 0, 0, 3, 0, 0, 0, 4>>}
 
