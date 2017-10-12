@@ -29,36 +29,38 @@ defmodule XDR.Type.VariableOpaqueTest do
     end
   end
 
-  test "valid?" do
-    assert XDR.Type.VariableOpaqueTest.Len2.valid?(<<>>) == true
-    assert XDR.Type.VariableOpaqueTest.Len2.valid?(<<0>>) == true
-    assert XDR.Type.VariableOpaqueTest.Len2.valid?(<<0, 0>>) == true
+  alias XDR.Type.VariableOpaqueTest.{Len1, Len2, Len3, Len4}
 
-    assert XDR.Type.VariableOpaqueTest.Len1.valid?(<<0, 0>>) == false
-    assert XDR.Type.VariableOpaqueTest.Len2.valid?(<<0, 0, 0>>) == false
-    assert XDR.Type.VariableOpaqueTest.Len1.valid?(false) == false
-    assert XDR.Type.VariableOpaqueTest.Len1.valid?(nil) == false
-    assert XDR.Type.VariableOpaqueTest.Len1.valid?(0) == false
-    assert XDR.Type.VariableOpaqueTest.Len1.valid?([0]) == false
+  test "valid?" do
+    assert Len2.valid?(<<>>) == true
+    assert Len2.valid?(<<0>>) == true
+    assert Len2.valid?(<<0, 0>>) == true
+
+    assert Len1.valid?(<<0, 0>>) == false
+    assert Len2.valid?(<<0, 0, 0>>) == false
+    assert Len1.valid?(false) == false
+    assert Len1.valid?(nil) == false
+    assert Len1.valid?(0) == false
+    assert Len1.valid?([0]) == false
   end
 
   test "encode" do
-    assert XDR.Type.VariableOpaqueTest.Len2.encode(<<>>) == {:ok, <<0, 0, 0, 0>>}
-    assert XDR.Type.VariableOpaqueTest.Len2.encode(<<0>>) == {:ok, <<0, 0, 0, 1, 0, 0, 0, 0>>}
-    assert XDR.Type.VariableOpaqueTest.Len2.encode(<<1>>) == {:ok, <<0, 0, 0, 1, 1, 0, 0, 0>>}
-    assert XDR.Type.VariableOpaqueTest.Len2.encode(<<0, 1>>) == {:ok, <<0, 0, 0, 2, 0, 1, 0, 0>>}
+    assert Len2.encode(<<>>) == {:ok, <<0, 0, 0, 0>>}
+    assert Len2.encode(<<0>>) == {:ok, <<0, 0, 0, 1, 0, 0, 0, 0>>}
+    assert Len2.encode(<<1>>) == {:ok, <<0, 0, 0, 1, 1, 0, 0, 0>>}
+    assert Len2.encode(<<0, 1>>) == {:ok, <<0, 0, 0, 2, 0, 1, 0, 0>>}
   end
 
   test "decode" do
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 0>>) == {:ok, <<>>}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, <<0>>}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>) == {:ok, <<1>>}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 2, 0, 1, 0, 0>>) == {:ok, <<0, 1>>}
+    assert Len2.decode(<<0, 0, 0, 0>>) == {:ok, <<>>}
+    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, <<0>>}
+    assert Len2.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>) == {:ok, <<1>>}
+    assert Len2.decode(<<0, 0, 0, 2, 0, 1, 0, 0>>) == {:ok, <<0, 1>>}
 
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 1, 65, 1, 0, 0>>) == {:error, :invalid_padding}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 1, 65, 0, 1, 0>>) == {:error, :invalid_padding}
-    assert XDR.Type.VariableOpaqueTest.Len2.decode(<<0, 0, 0, 1, 65, 0, 0, 1>>) == {:error, :invalid_padding}
+    assert Len2.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
+    assert Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}
+    assert Len2.decode(<<0, 0, 0, 1, 65, 1, 0, 0>>) == {:error, :invalid_padding}
+    assert Len2.decode(<<0, 0, 0, 1, 65, 0, 1, 0>>) == {:error, :invalid_padding}
+    assert Len2.decode(<<0, 0, 0, 1, 65, 0, 0, 1>>) == {:error, :invalid_padding}
   end
 end

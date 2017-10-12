@@ -24,35 +24,37 @@ defmodule XDR.Type.FixedArrayTest do
     end
   end
 
-  test "valid?" do
-    assert XDR.Type.FixedArrayTest.Len1.valid?([0]) == true
-    assert XDR.Type.FixedArrayTest.Len2.valid?([0, 1]) == true
+  alias XDR.Type.FixedArrayTest.{Len0, Len1, Len2}
 
-    assert XDR.Type.FixedArrayTest.Len1.valid?([0, 0]) == false
-    assert XDR.Type.FixedArrayTest.Len2.valid?([0, 0, 0]) == false
-    assert XDR.Type.FixedArrayTest.Len1.valid?(false) == false
-    assert XDR.Type.FixedArrayTest.Len1.valid?(nil) == false
-    assert XDR.Type.FixedArrayTest.Len1.valid?(0) == false
+  test "valid?" do
+    assert Len1.valid?([0]) == true
+    assert Len2.valid?([0, 1]) == true
+
+    assert Len1.valid?([0, 0]) == false
+    assert Len2.valid?([0, 0, 0]) == false
+    assert Len1.valid?(false) == false
+    assert Len1.valid?(nil) == false
+    assert Len1.valid?(0) == false
   end
 
   test "encode" do
-    assert XDR.Type.FixedArrayTest.Len0.encode([]) == {:ok, <<>>}
-    assert XDR.Type.FixedArrayTest.Len1.encode([0]) == {:ok, <<0, 0, 0, 0>>}
-    assert XDR.Type.FixedArrayTest.Len2.encode([1, 2]) == {:ok, <<0, 0, 0, 1, 0, 0, 0, 2>>}
-    assert XDR.Type.FixedArrayTest.Len2.encode([3, 4]) == {:ok, <<0, 0, 0, 3, 0, 0, 0, 4>>}
+    assert Len0.encode([]) == {:ok, <<>>}
+    assert Len1.encode([0]) == {:ok, <<0, 0, 0, 0>>}
+    assert Len2.encode([1, 2]) == {:ok, <<0, 0, 0, 1, 0, 0, 0, 2>>}
+    assert Len2.encode([3, 4]) == {:ok, <<0, 0, 0, 3, 0, 0, 0, 4>>}
 
-    assert XDR.Type.FixedArrayTest.Len1.encode([]) == {:error, :invalid}
-    assert XDR.Type.FixedArrayTest.Len0.encode([1]) == {:error, :invalid}
+    assert Len1.encode([]) == {:error, :invalid}
+    assert Len0.encode([1]) == {:error, :invalid}
   end
 
   test "decode" do
-    assert XDR.Type.FixedArrayTest.Len0.decode(<<>>) == {:ok, []}
-    assert XDR.Type.FixedArrayTest.Len0.decode(<<0, 0, 0, 0>>) == {:ok, []}
-    assert XDR.Type.FixedArrayTest.Len1.decode(<<0, 0, 0, 0>>) == {:ok, [0]}
-    assert XDR.Type.FixedArrayTest.Len1.decode(<<0, 0, 0, 1>>) == {:ok, [1]}
-    assert XDR.Type.FixedArrayTest.Len2.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, [0, 1]}
-    assert XDR.Type.FixedArrayTest.Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, [1, 1]}
-    assert XDR.Type.FixedArrayTest.Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 2>>) == {:ok, [1, 2]}
-    assert XDR.Type.FixedArrayTest.Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 4>>) == {:ok, [3, 4]}
+    assert Len0.decode(<<>>) == {:ok, []}
+    assert Len0.decode(<<0, 0, 0, 0>>) == {:ok, []}
+    assert Len1.decode(<<0, 0, 0, 0>>) == {:ok, [0]}
+    assert Len1.decode(<<0, 0, 0, 1>>) == {:ok, [1]}
+    assert Len2.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, [0, 1]}
+    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, [1, 1]}
+    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 2>>) == {:ok, [1, 2]}
+    assert Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 4>>) == {:ok, [3, 4]}
   end
 end
