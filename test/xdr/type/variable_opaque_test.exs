@@ -6,26 +6,26 @@ defmodule XDR.Type.VariableOpaqueTest do
   doctest XDR.Type.VariableOpaque
 
   defmodule XDR.Type.VariableOpaqueTest.Len1 do
-    use VariableOpaque, max: 1
+    use VariableOpaque, max_len: 1
   end
 
   defmodule XDR.Type.VariableOpaqueTest.Len2 do
-    use VariableOpaque, max: 2
+    use VariableOpaque, max_len: 2
   end
 
   defmodule XDR.Type.VariableOpaqueTest.Len3 do
-    use VariableOpaque, max: 3
+    use VariableOpaque, max_len: 3
   end
 
   defmodule XDR.Type.VariableOpaqueTest.Len4 do
-    use VariableOpaque, max: 4
+    use VariableOpaque, max_len: 4
   end
 
   defmodule XDR.Type.VariableOpaqueTest.ExceedMax do
     import CompileTimeAssertions
 
     assert_compile_time_raise RuntimeError, "max length too large", fn ->
-      use XDR.Type.VariableOpaque, max: Math.pow(2, 32)
+      use XDR.Type.VariableOpaque, max_len: Math.pow(2, 32)
     end
   end
 

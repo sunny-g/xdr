@@ -37,7 +37,7 @@ defmodule XDR.Type.VariableOpaque do
   @max Math.pow(2, 32) - 1
 
   defmacro __using__(opts \\ []) do
-    max = Keyword.get(opts, :max, @max)
+    max = Keyword.get(opts, :max_len, @max)
 
     if max > @max do
       raise "max length too large"

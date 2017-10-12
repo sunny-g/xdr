@@ -5,22 +5,22 @@ defmodule XDR.Type.VariableArrayTest do
   doctest XDR.Type.VariableArray
 
   defmodule XDR.Type.VariableArrayTest.Max0 do
-    use VariableArray, [max: 0, type: Int]
+    use VariableArray, [max_len: 0, type: Int]
   end
 
   defmodule XDR.Type.VariableArrayTest.Max1 do
-    use VariableArray, [max: 1, type: Int]
+    use VariableArray, [max_len: 1, type: Int]
   end
 
   defmodule XDR.Type.VariableArrayTest.Max2 do
-    use VariableArray, [max: 2, type: Int]
+    use VariableArray, [max_len: 2, type: Int]
   end
 
   defmodule XDR.Type.VariableArrayTest.InvalidLength do
     import CompileTimeAssertions
 
     assert_compile_time_raise RuntimeError, "invalid length", fn ->
-      use XDR.Type.VariableArray, [max: -1, type: Int]
+      use XDR.Type.VariableArray, [max_len: -1, type: Int]
     end
   end
 

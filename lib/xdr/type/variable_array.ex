@@ -15,7 +15,7 @@ defmodule XDR.Type.VariableArray do
   @max_len Math.pow(2, 32) - 1
 
   defmacro __using__(opts \\ []) do
-    max = Keyword.get(opts, :max, @max_len)
+    max = Keyword.get(opts, :max_len, @max_len)
     type = Keyword.get(opts, :type)
 
     if not (is_integer(max) and max >= 0 and max <= @max_len) do
