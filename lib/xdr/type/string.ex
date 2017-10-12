@@ -29,19 +29,19 @@ defmodule XDR.Type.String do
   @max_len Math.pow(2, 32) - 1
 
   defmacro __using__(opts \\ []) do
-    len = Keyword.get(opts, :len, @max_len)
+    max_len = Keyword.get(opts, :max_len, @max_len)
 
-    if len > @max_len do
+    if max_len > @max_len do
       raise "max length too large"
     end
 
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: unquote(len)
-      def valid?(string), do: unquote(__MODULE__).valid?(string, unquote(len))
-      def encode(string), do: unquote(__MODULE__).encode(string, unquote(len))
-      def decode(string), do: unquote(__MODULE__).decode(string, unquote(len))
+      def length, do: unquote(max_len)
+      def valid?(string), do: unquote(__MODULE__).valid?(string, unquote(max_len))
+      def encode(string), do: unquote(__MODULE__).encode(string, unquote(max_len))
+      def decode(string), do: unquote(__MODULE__).decode(string, unquote(max_len))
 
       defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
     end
