@@ -32,14 +32,14 @@ defmodule XDR.Type.Float do
   @doc """
   Encodes a single-precision float or integer into a 4-byte binary
   """
-  @spec encode(float :: __MODULE__.t) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(float :: t) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(float) when not is_valid_float?(float), do: {:error, :invalid}
   def encode(float), do: {:ok, <<float :: big-signed-float-size(@length)>>}
 
   @doc """
   Decodes a 4-byte binary into an single-precision float
   """
-  @spec decode(xdr :: __MODULE__.xdr) :: {:ok, float :: __MODULE__.t} | {:error, :invalid | :out_of_bounds}
+  @spec decode(xdr :: xdr) :: {:ok, float :: t} | {:error, :invalid | :out_of_bounds}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(xdr) when bit_size(xdr) !== @length, do: {:error, :out_of_bounds}
   def decode(<<float :: big-signed-float-size(@length)>>), do: {:ok, float}

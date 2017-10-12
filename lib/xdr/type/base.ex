@@ -15,10 +15,10 @@ defmodule XDR.Type.Base do
   @doc """
   Encodes a native type to an XDR binary
   """
-  @callback encode(native :: __MODULE__.t) :: {:ok, xdr :: __MODULE__.xdr} | {:error, reason :: atom}
+  @callback encode(native :: t) :: {:ok, xdr :: xdr} | {:error, reason :: atom}
 
   @doc """
   Decodes an XDR binary to a native type
   """
-  @callback decode(xdr :: __MODULE__.xdr) :: {:ok, native :: __MODULE__.t} | {:error, reason :: atom}
+  @callback decode(xdr :: xdr) :: {:ok, native :: t} | {:error, reason :: atom}
 end

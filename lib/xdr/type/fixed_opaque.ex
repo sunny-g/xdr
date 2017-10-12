@@ -40,13 +40,13 @@ defmodule XDR.Type.FixedOpaque do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(any, len :: __MODULE__.len) :: boolean
+  @spec valid?(any, len :: len) :: boolean
   def valid?(opaque, len), do: is_valid_fixed_opaque?(opaque, len)
 
   @doc """
   Encodes a fixed opaque binary by appending any necessary padding
   """
-  @spec encode(opaque :: __MODULE__.t, len :: __MODULE__.len) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(opaque :: t, len :: len) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(opaque, len) when not is_valid_fixed_opaque?(opaque, len), do: {:error, :invalid}
   def encode(opaque, _) when required_padding(opaque) === 0, do: {:ok, opaque}
   def encode(opaque, _) when required_padding(opaque) === 1, do: {:ok, opaque <> <<0>>}
@@ -56,7 +56,7 @@ defmodule XDR.Type.FixedOpaque do
   @doc """
   Decodes an fixed opaque xdr binary by truncating it to the desired length
   """
-  @spec decode(xdr :: __MODULE__.xdr, len :: __MODULE__.len) :: {:ok, opaque :: __MODULE__.t} | __MODULE__.decode_error
+  @spec decode(xdr :: xdr, len :: len) :: {:ok, opaque :: t} | decode_error
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(xdr, len) when len > byte_size(xdr), do: {:error, :out_of_bounds}
   def decode(xdr, len) do

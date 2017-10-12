@@ -58,14 +58,14 @@ defmodule XDR.Type.VariableOpaque do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(any, max :: __MODULE__.max) :: boolean
+  @spec valid?(any, max :: max) :: boolean
   def valid?(opaque, max \\ @max)
   def valid?(opaque, max), do: is_valid_variable_opaque?(opaque, max)
 
   @doc """
   Encodes a valid variable opaque binary, prepending the 4-byte length of the binary and appending any necessary padding
   """
-  @spec encode(opaque :: __MODULE__.t, max :: __MODULE__.max) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(opaque :: t, max :: max) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(opaque, max \\ @max)
   def encode(opaque, max) when not is_valid_variable_opaque?(opaque, max), do: {:error, :invalid}
   def encode(opaque, _), do: {:ok, encode_opaque(opaque, required_padding(opaque))}
@@ -73,7 +73,7 @@ defmodule XDR.Type.VariableOpaque do
   @doc """
   Decodes a valid variable opaque xdr binary, removing the 4-byte length and any provided padding
   """
-  @spec decode(xdr :: __MODULE__.xdr, max :: __MODULE__.max) :: {:ok, opaque :: __MODULE__.t} | __MODULE__.decode_error
+  @spec decode(xdr :: xdr, max :: max) :: {:ok, opaque :: t} | decode_error
   def decode(xdr, max \\ @max)
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(_, max) when max > @max, do: {:error, :max_length_too_large}
@@ -96,7 +96,7 @@ defmodule XDR.Type.VariableOpaque do
   # HELPERS
   #-------------------------------------------------------------------------#
   # prepends 4-byte length and appends any necessary padding
-  @spec encode_opaque(opaque :: __MODULE__.t, padding_length :: 0..3) :: xdr :: __MODULE__.xdr
+  @spec encode_opaque(opaque :: t, padding_length :: 0..3) :: xdr :: xdr
   defp encode_opaque(opaque, 0), do: encode_length(opaque) <> opaque
   defp encode_opaque(opaque, 1), do: encode_length(opaque) <> opaque <> <<0>>
   defp encode_opaque(opaque, 2), do: encode_length(opaque) <> opaque <> <<0, 0>>
@@ -104,7 +104,7 @@ defmodule XDR.Type.VariableOpaque do
   defp encode_opaque(opaque, 4), do: encode_length(opaque) <> opaque
 
   # helper for converting a binary or it's length to a 4-byte binary
-  @spec encode_length(opaque :: __MODULE__.t) :: opaque_length :: Uint.xdr
+  @spec encode_length(opaque :: t) :: opaque_length :: Uint.xdr
   defp encode_length(opaque) when is_binary(opaque), do: byte_size(opaque) |> encode_length
   @spec encode_length(len :: Uint.t) :: opaque_length :: Uint.xdr
   defp encode_length(len) when is_integer(len), do: Uint.encode(len) |> elem(1)

@@ -50,14 +50,14 @@ defmodule XDR.Type.String do
   @doc """
   Determines if a value is a bitstring of a valid length
   """
-  @spec valid?(any, max_len :: __MODULE__.max) :: boolean
+  @spec valid?(any, max_len :: max) :: boolean
   def valid?(string, max_len \\ @max_len)
   def valid?(string, max_len), do: is_valid_string?(string, max_len)
 
   @doc """
   Encodes a valid string by prepending the 4-byte length and appending any necessary padding
   """
-  @spec encode(string :: __MODULE__.t, max_len :: __MODULE__.max) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(string :: t, max_len :: max) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(string, max_len \\ @max_len)
   def encode(string, max_len) when not is_valid_string?(string, max_len), do: {:error, :invalid}
   def encode(string, max_len), do: VariableOpaque.encode(string, max_len)
@@ -65,7 +65,7 @@ defmodule XDR.Type.String do
   @doc """
   Decodes a valid string xdr binary, removing the 4-byte length and any provided padding
   """
-  @spec decode(xdr :: __MODULE__.xdr, max_len :: __MODULE__.max) :: {:ok, string :: __MODULE__.t} | __MODULE__.decode_error
+  @spec decode(xdr :: xdr, max_len :: max) :: {:ok, string :: t} | decode_error
   def decode(xdr, max_len \\ @max_len)
   def decode(xdr, max_len) do
     case VariableOpaque.decode(xdr, max_len) do

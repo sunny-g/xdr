@@ -37,7 +37,7 @@ defmodule XDR.Type.VariableArray do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(any, type :: module, max :: __MODULE__.max) :: boolean
+  @spec valid?(any, type :: module, max :: max) :: boolean
   def valid?(array, type, max \\ @max_len)
   def valid?(array, type, max) do
     is_list(array)
@@ -51,7 +51,7 @@ defmodule XDR.Type.VariableArray do
   @doc """
   Encodes a fixed array into a binary
   """
-  @spec encode(array :: __MODULE__.t, type :: module, max :: __MODULE__.max) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(array :: t, type :: module, max :: max) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(array, type, max \\ @max_len)
   def encode(array, type, max) do
     case valid?(array, type, max) do
@@ -63,7 +63,7 @@ defmodule XDR.Type.VariableArray do
   @doc """
   Decodes an fixed array xdr binary by truncating it to the desired length
   """
-  @spec decode(xdr :: __MODULE__.xdr, type :: module, max :: __MODULE__.max) :: {:ok, array :: __MODULE__.t} | __MODULE__.decode_error
+  @spec decode(xdr :: xdr, type :: module, max :: max) :: {:ok, array :: t} | decode_error
   def decode(xdr, type, max \\ @max_len)
   def decode(xdr, _, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(_, _, max) when max > @max_len, do: {:error, :max_length_too_large}

@@ -29,7 +29,7 @@ defmodule XDR.Type.FixedArray do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(any, type :: module, len :: __MODULE__.len) :: boolean
+  @spec valid?(any, type :: module, len :: len) :: boolean
   def valid?(array, type, len) do
     is_list(array)
     and is_atom(type)
@@ -41,7 +41,7 @@ defmodule XDR.Type.FixedArray do
   @doc """
   Encodes a fixed array into a binary
   """
-  @spec encode(array :: __MODULE__.t, type :: module, len :: __MODULE__.len) :: {:ok, xdr :: __MODULE__.xdr} | {:error, :invalid}
+  @spec encode(array :: t, type :: module, len :: len) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(array, type, len) do
     case valid?(array, type, len) do
       true -> {:ok, array_to_xdr(array, type)}
@@ -52,7 +52,7 @@ defmodule XDR.Type.FixedArray do
   @doc """
   Decodes an fixed array xdr binary by truncating it to the desired length
   """
-  @spec decode(xdr :: __MODULE__.xdr, type :: module, len :: __MODULE__.len) :: {:ok, array :: __MODULE__.t} | __MODULE__.decode_error
+  @spec decode(xdr :: xdr, type :: module, len :: len) :: {:ok, array :: t} | decode_error
   def decode(xdr, _, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(xdr, _, len) when (len * 4) > byte_size(xdr), do: {:error, :xdr_too_small}
   def decode(xdr, type, len), do: xdr_to_array(xdr, type, len)
