@@ -1,6 +1,4 @@
 defmodule XDR.Type.Enum do
-  # TODO: allow __using__ to statically compile spec into pattern-matched methods
-
   import XDR.Util.Macros
   alias XDR.Type.Int
 
@@ -16,6 +14,7 @@ defmodule XDR.Type.Enum do
   @type encode_error :: {:error, :invalid | :invalid_name | :invalid_enum}
 
   defmacro __using__(spec: spec) do
+    # TODO: update this to statically compile spec into pattern-matched methods
     if not Keyword.keyword?(spec) do
       raise "invalid Enum spec"
     end
@@ -38,7 +37,7 @@ defmodule XDR.Type.Enum do
   def length, do: Int.length
 
   @doc """
-  Determines if an atom name is a valid according to the enum spec
+  Determines if an atom name is valid according to the enum spec
   """
   @spec valid?(any, enum :: t) :: boolean
   def valid?(name, _) when not is_atom(name), do: false
