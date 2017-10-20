@@ -1,8 +1,17 @@
 defmodule XDR.Type.Void do
+  @behaviour XDR.Type.Base
+
   @typedoc """
   Void type
   """
   @type t :: nil
+
+  @doc false
+  def length, do: 0
+
+  def new(val \\ nil)
+  def new(nil), do: {:ok, nil}
+  def new(_), do: {:error, :invalid}
 
   @doc """
   Determines if value is nil or not

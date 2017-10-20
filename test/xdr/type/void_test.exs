@@ -3,6 +3,16 @@ defmodule XDR.Type.VoidTest do
   alias XDR.Type.Void
   doctest XDR.Type.Void
 
+  test "new" do
+    assert Void.new == {:ok, nil}
+    assert Void.new(nil) == {:ok, nil}
+
+    assert Void.new(0) == {:error, :invalid}
+    assert Void.new("nil") == {:error, :invalid}
+    assert Void.new([]) == {:error, :invalid}
+    assert Void.new({}) == {:error, :invalid}
+  end
+
   test "valid?" do
     assert Void.valid?(nil) == true
 
