@@ -32,7 +32,7 @@ defmodule XDR.Type.VariableArray do
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(max))
       def decode(array), do: unquote(__MODULE__).decode(array, unquote(type), unquote(max))
 
-      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
+      defoverridable [length: 0, new: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
