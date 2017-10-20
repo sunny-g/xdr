@@ -2,7 +2,17 @@ defmodule XDR.Type.BoolTest do
   use ExUnit.Case
   alias XDR.Type.Bool
   alias XDR.Type.Int
-  doctest XDR.Type.Bool
+
+  test "new" do
+    assert Bool.new(true) == {:ok, true}
+    assert Bool.new(false) == {:ok, false}
+
+    assert Bool.new(0) == {:error, :invalid}
+    assert Bool.new(nil) == {:error, :invalid}
+    assert Bool.new("true") == {:error, :invalid}
+    assert Bool.new([]) == {:error, :invalid}
+    assert Bool.new({}) == {:error, :invalid}
+  end
 
   test "valid?" do
     assert Bool.valid?(true) == true
