@@ -2,10 +2,25 @@ defmodule XDR.Type.HyperIntTest do
   use ExUnit.Case
   require Math
   alias XDR.Type.HyperInt
-  doctest XDR.Type.HyperInt
 
   @min_hyper_int -Math.pow(2, 63)
   @max_hyper_int Math.pow(2, 63) - 1
+
+  test "new" do
+    assert HyperInt.new === {:ok, 0}
+    assert HyperInt.new(0) === {:ok, 0}
+    assert HyperInt.new(1) === {:ok, 1}
+    assert HyperInt.new(@min_hyper_int) === {:ok, @min_hyper_int}
+    assert HyperInt.new(@max_hyper_int) === {:ok, @max_hyper_int}
+
+    assert HyperInt.new(@min_hyper_int - 1) === {:error, :invalid}
+    assert HyperInt.new(@max_hyper_int + 1) === {:error, :invalid}
+    assert HyperInt.new("0") === {:error, :invalid}
+    assert HyperInt.new(nil) === {:error, :invalid}
+    assert HyperInt.new(false) === {:error, :invalid}
+    assert HyperInt.new([]) === {:error, :invalid}
+    assert HyperInt.new({}) === {:error, :invalid}
+  end
 
   test "valid?" do
     assert HyperInt.valid?(0) == true

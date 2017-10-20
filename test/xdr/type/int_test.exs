@@ -2,10 +2,25 @@ defmodule XDR.Type.IntTest do
   use ExUnit.Case
   require Math
   alias XDR.Type.Int
-  doctest XDR.Type.Int
 
   @min_int -Math.pow(2, 31)
   @max_int Math.pow(2, 31) - 1
+
+  test "new" do
+    assert Int.new === {:ok, 0}
+    assert Int.new(0) === {:ok, 0}
+    assert Int.new(1) === {:ok, 1}
+    assert Int.new(@min_int) === {:ok, @min_int}
+    assert Int.new(@max_int) === {:ok, @max_int}
+
+    assert Int.new(@min_int - 1) === {:error, :invalid}
+    assert Int.new(@max_int + 1) === {:error, :invalid}
+    assert Int.new("0") === {:error, :invalid}
+    assert Int.new(nil) === {:error, :invalid}
+    assert Int.new(false) === {:error, :invalid}
+    assert Int.new([]) === {:error, :invalid}
+    assert Int.new({}) === {:error, :invalid}
+  end
 
   test "valid?" do
     assert Int.valid?(0) == true

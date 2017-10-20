@@ -8,10 +8,10 @@ defmodule XDR.Type.UintTest do
 
   test "new" do
     assert Uint.new === {:ok, 0}
-    assert Uint.new(0) === {:ok, 0}
+    assert Uint.new(@min_uint) === {:ok, @min_uint}
     assert Uint.new(@max_uint) === {:ok, @max_uint}
 
-    assert Uint.new(-1) === {:error, :invalid}
+    assert Uint.new(@min_uint - 1) === {:error, :invalid}
     assert Uint.new(@max_uint + 1) === {:error, :invalid}
     assert Uint.new(<<1>>) === {:error, :invalid}
     assert Uint.new("1") === {:error, :invalid}

@@ -7,6 +7,19 @@ defmodule XDR.Type.HyperUintTest do
   @min_hyper_uint 0
   @max_hyper_uint Math.pow(2, 64) - 1
 
+  test "new" do
+    assert HyperUint.new === {:ok, 0}
+    assert HyperUint.new(@min_hyper_uint) === {:ok, @min_hyper_uint}
+    assert HyperUint.new(@max_hyper_uint) === {:ok, @max_hyper_uint}
+
+    assert HyperUint.new(@min_hyper_uint - 1) === {:error, :invalid}
+    assert HyperUint.new(@max_hyper_uint + 1) === {:error, :invalid}
+    assert HyperUint.new(<<1>>) === {:error, :invalid}
+    assert HyperUint.new("1") === {:error, :invalid}
+    assert HyperUint.new(nil) === {:error, :invalid}
+    assert HyperUint.new(false) === {:error, :invalid}
+  end
+
   test "valid?" do
     assert HyperUint.valid?(1) == true
     assert HyperUint.valid?(@min_hyper_uint) == true

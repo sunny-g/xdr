@@ -30,6 +30,11 @@ defmodule XDR.Type.Int do
   @doc false
   def length, do: @length
 
+  @doc false
+  def new(int \\ 0)
+  def new(int) when is_valid_int?(int), do: {:ok, int}
+  def new(_), do: {:error, :invalid}
+
   @doc """
   Determines if a value is a valid 4-byte integer
   """

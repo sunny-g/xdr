@@ -30,6 +30,11 @@ defmodule XDR.Type.HyperUint do
   @doc false
   def length, do: @length
 
+  @doc false
+  def new(hyper_uint \\ 0)
+  def new(hyper_uint) when is_valid_hyper_uint?(hyper_uint), do: {:ok, hyper_uint}
+  def new(_), do: {:error, :invalid}
+
   @doc """
   Determines if a value is a valid 8-byte hyper unsigned integer
   """
