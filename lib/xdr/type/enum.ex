@@ -16,7 +16,7 @@ defmodule XDR.Type.Enum do
   defmacro __using__(spec: spec) do
     # TODO: update this to statically compile spec into pattern-matched methods
     if not Keyword.keyword?(spec) do
-      raise "invalid Enum spec"
+      raise "Enum spec must be a keyword list"
     end
 
     if Enum.any?(spec, fn {_, v} -> not is_number(v) end) do
@@ -27,20 +27,32 @@ defmodule XDR.Type.Enum do
       @behaviour XDR.Type.Base
 
       defdelegate length, to: unquote(__MODULE__)
+      def new(name), do: unquote(__MODULE__).new(name, unquote(spec))
       def valid?(name), do: unquote(__MODULE__).valid?(name, unquote(spec))
       def encode(name), do: unquote(__MODULE__).encode(name, unquote(spec))
       def decode(name), do: unquote(__MODULE__).decode(name, unquote(spec))
+
+      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
   @doc false
   def length, do: Int.length
 
+  @doc false
+  def new(name, enum) do
+    case valid?(name, enum) do
+      true -> {:ok, name}
+      false -> {:error, :invalid}
+    end
+  end
+
   @doc """
   Determines if an atom name is valid according to the enum spec
   """
   @spec valid?(any, enum :: t) :: boolean
   def valid?(name, _) when not is_atom(name), do: false
+  def valid?(_, enum) when not is_list(enum), do: false
   def valid?(name, enum), do: Keyword.has_key?(enum, name) and Keyword.get(enum, name) |> Int.valid?
 
   @doc """

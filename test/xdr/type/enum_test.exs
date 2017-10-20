@@ -2,7 +2,6 @@ defmodule XDR.Type.EnumTest do
   use ExUnit.Case
   alias XDR.Type.Enum
   alias XDR.Type.Int
-  doctest XDR.Type.Enum
 
   defmodule XDR.Type.EnumTest.DummyEnum do
     use Enum, spec: [
@@ -15,7 +14,7 @@ defmodule XDR.Type.EnumTest do
   defmodule XDR.Type.EnumTest.InvalidSpec do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "invalid Enum spec", fn ->
+    assert_compile_time_raise RuntimeError, "Enum spec must be a keyword list", fn ->
       use XDR.Type.Enum, spec: %{}
     end
   end
@@ -29,6 +28,17 @@ defmodule XDR.Type.EnumTest do
   end
 
   alias XDR.Type.EnumTest.DummyEnum
+
+  test "new" do
+    assert DummyEnum.new(:red) == {:ok, :red}
+    assert DummyEnum.new(:green) == {:ok, :green}
+    assert DummyEnum.new(:evenMoreGreen) == {:ok, :evenMoreGreen}
+
+    assert DummyEnum.new(:blue) == {:error, :invalid}
+    assert DummyEnum.new(0) == {:error, :invalid}
+    assert DummyEnum.new(1) == {:error, :invalid}
+    assert DummyEnum.new(2) == {:error, :invalid}
+  end
 
   test "valid?" do
     assert DummyEnum.valid?(:red) == true
