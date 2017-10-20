@@ -2,10 +2,22 @@ defmodule XDR.Type.UintTest do
   use ExUnit.Case
   require Math
   alias XDR.Type.Uint
-  doctest XDR.Type.Uint
 
   @min_uint 0
   @max_uint Math.pow(2, 32) - 1
+
+  test "new" do
+    assert Uint.new === {:ok, 0}
+    assert Uint.new(0) === {:ok, 0}
+    assert Uint.new(@max_uint) === {:ok, @max_uint}
+
+    assert Uint.new(-1) === {:error, :invalid}
+    assert Uint.new(@max_uint + 1) === {:error, :invalid}
+    assert Uint.new(<<1>>) === {:error, :invalid}
+    assert Uint.new("1") === {:error, :invalid}
+    assert Uint.new(nil) === {:error, :invalid}
+    assert Uint.new(false) === {:error, :invalid}
+  end
 
   test "valid?" do
     assert Uint.valid?(1) == true

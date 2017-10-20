@@ -30,6 +30,11 @@ defmodule XDR.Type.Uint do
   @doc false
   def length, do: @length
 
+  @doc false
+  def new(uint \\ 0)
+  def new(uint) when is_valid_uint?(uint), do: {:ok, uint}
+  def new(_), do: {:error, :invalid}
+
   @doc """
   Determines if a value is a valid 4-byte unsigned integer
   """
