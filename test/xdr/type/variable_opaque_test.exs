@@ -1,9 +1,7 @@
 defmodule XDR.Type.VariableOpaqueTest do
   use ExUnit.Case
-  import CompileTimeAssertions
   require Math
   alias XDR.Type.VariableOpaque
-  doctest XDR.Type.VariableOpaque
 
   defmodule XDR.Type.VariableOpaqueTest.Len1 do
     use VariableOpaque, max_len: 1
@@ -30,6 +28,20 @@ defmodule XDR.Type.VariableOpaqueTest do
   end
 
   alias XDR.Type.VariableOpaqueTest.{Len1, Len2, Len3, Len4}
+
+  test "new" do
+    assert Len1.new == {:ok, <<>>}
+    assert Len1.new(<<>>) == {:ok, <<>>}
+    assert Len1.new(<<0>>) == {:ok, <<0>>}
+    assert Len1.new(<<1>>) == {:ok, <<1>>}
+    assert Len1.new("a") == {:ok, "a"}
+
+    assert Len1.new(false) == {:error, :invalid}
+    assert Len1.new(nil) == {:error, :invalid}
+    assert Len1.new(0) == {:error, :invalid}
+    assert Len1.new([]) == {:error, :invalid}
+    assert Len1.new({}) == {:error, :invalid}
+  end
 
   test "valid?" do
     assert Len2.valid?(<<>>) == true

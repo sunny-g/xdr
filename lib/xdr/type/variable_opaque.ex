@@ -47,13 +47,20 @@ defmodule XDR.Type.VariableOpaque do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(max)
+      defdelegate new, to: unquote(__MODULE__)
+      def new(opaque), do: unquote(__MODULE__).new(opaque, unquote(max))
       def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(max))
       def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(max))
       def decode(opaque), do: unquote(__MODULE__).decode(opaque, unquote(max))
 
-      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
+      defoverridable [length: 0, new: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
+
+  @doc false
+  def new(opaque \\ <<>>, max \\ @max)
+  def new(opaque, max) when is_valid_variable_opaque?(opaque, max), do: {:ok, opaque}
+  def new(_, _), do: {:error, :invalid}
 
   @doc """
   Determines if a value is a binary of a valid length
