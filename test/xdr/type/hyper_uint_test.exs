@@ -2,7 +2,6 @@ defmodule XDR.Type.HyperUintTest do
   use ExUnit.Case
   require Math
   alias XDR.Type.HyperUint
-  doctest XDR.Type.HyperUint
 
   @min_hyper_uint 0
   @max_hyper_uint Math.pow(2, 64) - 1

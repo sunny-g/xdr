@@ -1,7 +1,7 @@
 defmodule XDR.Type.VariableArrayTest do
   use ExUnit.Case
-  alias XDR.Type.Int
   alias XDR.Type.VariableArray
+  alias XDR.Type.Int
 
   defmodule XDR.Type.VariableArrayTest.Max0 do
     use VariableArray, spec: [max_len: 0, type: Int]

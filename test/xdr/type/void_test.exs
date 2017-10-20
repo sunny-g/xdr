@@ -1,7 +1,6 @@
 defmodule XDR.Type.VoidTest do
   use ExUnit.Case
   alias XDR.Type.Void
-  doctest XDR.Type.Void
 
   test "new" do
     assert Void.new == {:ok, nil}

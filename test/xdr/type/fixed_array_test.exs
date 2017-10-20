@@ -1,7 +1,7 @@
 defmodule XDR.Type.FixedArrayTest do
   use ExUnit.Case
-  alias XDR.Type.Int
   alias XDR.Type.FixedArray
+  alias XDR.Type.Int
 
   defmodule XDR.Type.FixedArrayTest.Len0 do
     use FixedArray, [len: 0, type: Int]
