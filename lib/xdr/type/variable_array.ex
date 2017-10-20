@@ -26,6 +26,7 @@ defmodule XDR.Type.VariableArray do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(max)
+      def new, do: unquote(__MODULE__).new([], unquote(type), unquote(max))
       def new(array), do: unquote(__MODULE__).new(array, unquote(type), unquote(max))
       def valid?(array), do: unquote(__MODULE__).valid?(array, unquote(type), unquote(max))
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(max))

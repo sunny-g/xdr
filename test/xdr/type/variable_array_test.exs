@@ -26,6 +26,7 @@ defmodule XDR.Type.VariableArrayTest do
   alias XDR.Type.VariableArrayTest.{Max0, Max1, Max2}
 
   test "new" do
+    assert Max0.new == {:ok, []}
     assert Max0.new([]) == {:ok, []}
     assert Max1.new([]) == {:ok, []}
     assert Max1.new([0]) == {:ok, [0]}

@@ -47,7 +47,7 @@ defmodule XDR.Type.VariableOpaque do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(max)
-      defdelegate new, to: unquote(__MODULE__)
+      def new, do: unquote(__MODULE__).new
       def new(opaque), do: unquote(__MODULE__).new(opaque, unquote(max))
       def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(max))
       def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(max))
