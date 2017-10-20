@@ -2,7 +2,6 @@ defmodule XDR.Type.FixedArrayTest do
   use ExUnit.Case
   alias XDR.Type.Int
   alias XDR.Type.FixedArray
-  doctest XDR.Type.FixedArray
 
   defmodule XDR.Type.FixedArrayTest.Len0 do
     use FixedArray, [len: 0, type: Int]
@@ -25,6 +24,21 @@ defmodule XDR.Type.FixedArrayTest do
   end
 
   alias XDR.Type.FixedArrayTest.{Len0, Len1, Len2}
+
+  test "new" do
+    assert Len0.new([]) == {:ok, []}
+    assert Len1.new([0]) == {:ok, [0]}
+    assert Len1.new([1]) == {:ok, [1]}
+
+    assert Len0.new([1]) == {:error, :invalid}
+    assert Len1.new([]) == {:error, :invalid}
+    assert Len1.new([0, 1]) == {:error, :invalid}
+    assert Len0.new({1}) == {:error, :invalid}
+    assert Len1.new({0, 1}) == {:error, :invalid}
+    assert Len0.new(false) == {:error, :invalid}
+    assert Len0.new(nil) == {:error, :invalid}
+    assert Len0.new(0) == {:error, :invalid}
+  end
 
   test "valid?" do
     assert Len1.valid?([0]) == true

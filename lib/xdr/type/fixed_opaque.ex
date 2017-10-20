@@ -29,13 +29,19 @@ defmodule XDR.Type.FixedOpaque do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(len)
+      def new(opaque), do: unquote(__MODULE__).new(opaque, unquote(len))
       def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(len))
       def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(len))
       def decode(opaque), do: unquote(__MODULE__).decode(opaque, unquote(len))
 
-      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
+      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
+
+  @doc false
+  def new(opaque \\ <<>>, len)
+  def new(opaque, len) when is_valid_fixed_opaque?(opaque, len), do: {:ok, opaque}
+  def new(_, _), do: {:error, :invalid}
 
   @doc """
   Determines if a value is a binary of a valid length

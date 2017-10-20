@@ -18,11 +18,21 @@ defmodule XDR.Type.FixedArray do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(len)
+      def new(array), do: unquote(__MODULE__).new(array, unquote(type), unquote(len))
       def valid?(array), do: unquote(__MODULE__).valid?(array, unquote(type), unquote(len))
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(len))
       def decode(array), do: unquote(__MODULE__).decode(array, unquote(type), unquote(len))
 
-      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
+      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
+    end
+  end
+
+  @doc false
+  def new(array, type, len \\ 0)
+  def new(array, type, len) do
+    case valid?(array, type, len) do
+      true -> {:ok, array}
+      false -> {:error, :invalid}
     end
   end
 
