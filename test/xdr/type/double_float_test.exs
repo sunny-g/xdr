@@ -1,7 +1,22 @@
 defmodule XDR.Type.DoubleFloatTest do
   use ExUnit.Case
   alias XDR.Type.DoubleFloat
-  doctest XDR.Type.DoubleFloat
+
+  test "new" do
+    assert DoubleFloat.new === {:ok, 0.0}
+    assert DoubleFloat.new(0) === {:ok, 0}
+    assert DoubleFloat.new(0.0) === {:ok, 0.0}
+    assert DoubleFloat.new(1.0) === {:ok, 1.0}
+    assert DoubleFloat.new(-1.0) === {:ok, -1.0}
+
+    assert DoubleFloat.new(<<0>>) === {:error, :invalid}
+    assert DoubleFloat.new("0") === {:error, :invalid}
+    assert DoubleFloat.new("0.0") === {:error, :invalid}
+    assert DoubleFloat.new(false) === {:error, :invalid}
+    assert DoubleFloat.new(nil) === {:error, :invalid}
+    assert DoubleFloat.new([]) === {:error, :invalid}
+    assert DoubleFloat.new({}) === {:error, :invalid}
+  end
 
   test "valid?" do
     assert DoubleFloat.valid?(0) == true

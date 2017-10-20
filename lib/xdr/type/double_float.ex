@@ -23,6 +23,11 @@ defmodule XDR.Type.DoubleFloat do
   @doc false
   def length, do: @length
 
+  @doc false
+  def new(float \\ 0.0)
+  def new(float) when is_valid_double_float?(float), do: {:ok, float}
+  def new(_), do: {:error, :invalid}
+
   @doc """
   Determines if a value is a valid 8-byte float or integer
   """

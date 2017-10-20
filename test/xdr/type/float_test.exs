@@ -1,7 +1,22 @@
 defmodule XDR.Type.FloatTest do
   use ExUnit.Case
   alias XDR.Type.Float
-  doctest XDR.Type.Float
+
+  test "new" do
+    assert Float.new === {:ok, 0.0}
+    assert Float.new(0) === {:ok, 0}
+    assert Float.new(0.0) === {:ok, 0.0}
+    assert Float.new(1.0) === {:ok, 1.0}
+    assert Float.new(-1.0) === {:ok, -1.0}
+
+    assert Float.new(<<0>>) === {:error, :invalid}
+    assert Float.new("0") === {:error, :invalid}
+    assert Float.new("0.0") === {:error, :invalid}
+    assert Float.new(false) === {:error, :invalid}
+    assert Float.new(nil) === {:error, :invalid}
+    assert Float.new([]) === {:error, :invalid}
+    assert Float.new({}) === {:error, :invalid}
+  end
 
   test "valid?" do
     assert Float.valid?(0) == true
