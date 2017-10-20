@@ -22,8 +22,6 @@ defmodule XDR.Type.FixedArray do
       def valid?(array), do: unquote(__MODULE__).valid?(array, unquote(type), unquote(len))
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(len))
       def decode(array), do: unquote(__MODULE__).decode(array, unquote(type), unquote(len))
-
-      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 

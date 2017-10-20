@@ -33,8 +33,6 @@ defmodule XDR.Type.FixedOpaque do
       def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(len))
       def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(len))
       def decode(opaque), do: unquote(__MODULE__).decode(opaque, unquote(len))
-
-      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 

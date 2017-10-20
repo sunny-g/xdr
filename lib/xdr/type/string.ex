@@ -44,8 +44,6 @@ defmodule XDR.Type.String do
       def valid?(string), do: unquote(__MODULE__).valid?(string, unquote(max_len))
       def encode(string), do: unquote(__MODULE__).encode(string, unquote(max_len))
       def decode(string), do: unquote(__MODULE__).decode(string, unquote(max_len))
-
-      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
     end
   end
 

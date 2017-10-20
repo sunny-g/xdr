@@ -31,8 +31,6 @@ defmodule XDR.Type.Enum do
       def valid?(name), do: unquote(__MODULE__).valid?(name, unquote(spec))
       def encode(name), do: unquote(__MODULE__).encode(name, unquote(spec))
       def decode(name), do: unquote(__MODULE__).decode(name, unquote(spec))
-
-      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
