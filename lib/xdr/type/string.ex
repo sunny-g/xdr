@@ -39,6 +39,8 @@ defmodule XDR.Type.String do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(max_len)
+      def new, do: unquote(__MODULE__).new
+      def new(string), do: unquote(__MODULE__).new(string, unquote(max_len))
       def valid?(string), do: unquote(__MODULE__).valid?(string, unquote(max_len))
       def encode(string), do: unquote(__MODULE__).encode(string, unquote(max_len))
       def decode(string), do: unquote(__MODULE__).decode(string, unquote(max_len))
@@ -46,6 +48,11 @@ defmodule XDR.Type.String do
       defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
     end
   end
+
+  @doc false
+  def new(string \\ "", max_len \\ @max_len)
+  def new(string, max_len) when is_valid_string?(string, max_len), do: {:ok, string}
+  def new(_, _), do: {:error, :invalid}
 
   @doc """
   Determines if a value is a bitstring of a valid length

@@ -1,7 +1,7 @@
 defmodule XDR.Type.StringTest do
   use ExUnit.Case
+  require Math
   alias XDR.Type.String
-  doctest XDR.Type.String
 
   defmodule XDR.Type.StringTest.Len1 do
     use String, max_len: 1
@@ -28,6 +28,22 @@ defmodule XDR.Type.StringTest do
   end
 
   alias XDR.Type.StringTest.{Len1, Len2, Len3, Len4}
+
+  test "new" do
+    assert Len1.new === {:ok, ""}
+    assert Len1.new("") === {:ok, ""}
+    assert Len1.new("a") === {:ok, "a"}
+    assert Len2.new("a") === {:ok, "a"}
+    assert Len2.new("ab") === {:ok, "ab"}
+
+    assert Len1.new("ab") === {:error, :invalid}
+    assert Len2.new("abc") === {:error, :invalid}
+    assert Len1.new(0) === {:error, :invalid}
+    assert Len1.new(false) === {:error, :invalid}
+    assert Len1.new(nil) === {:error, :invalid}
+    assert Len1.new([]) === {:error, :invalid}
+    assert Len1.new({}) === {:error, :invalid}
+  end
 
   test "valid?" do
     assert Len2.valid?("") == true
