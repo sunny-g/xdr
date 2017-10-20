@@ -14,9 +14,9 @@ defmodule XDR.Type.VariableArray do
   @len_size 32
   @max_len Math.pow(2, 32) - 1
 
-  defmacro __using__(opts \\ []) do
-    max = Keyword.get(opts, :max_len, @max_len)
-    type = Keyword.get(opts, :type)
+  defmacro __using__(spec: spec) do
+    max = Keyword.get(spec, :max_len, @max_len)
+    type = Keyword.get(spec, :type)
 
     if not (is_integer(max) and max >= 0 and max <= @max_len) do
       raise "invalid length"
@@ -26,11 +26,21 @@ defmodule XDR.Type.VariableArray do
       @behaviour XDR.Type.Base
 
       def length, do: unquote(max)
+      def new(array), do: unquote(__MODULE__).new(array, unquote(type), unquote(max))
       def valid?(array), do: unquote(__MODULE__).valid?(array, unquote(type), unquote(max))
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(max))
       def decode(array), do: unquote(__MODULE__).decode(array, unquote(type), unquote(max))
 
-      defoverridable [length: 0, valid?: 1, encode: 1, decode: 1]
+      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
+    end
+  end
+
+  @doc false
+  def new(array, type, max \\ @max_len)
+  def new(array, type, max) do
+    case valid?(array, type, max) do
+      true -> {:ok, array}
+      false -> {:error, :invalid}
     end
   end
 
