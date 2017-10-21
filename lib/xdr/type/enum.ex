@@ -5,10 +5,8 @@ defmodule XDR.Type.Enum do
   @typedoc """
   A map or struct defining the spec for an Enum, where values are 4-byte integers
   """
-  @type t :: struct | %{
-    optional(name :: name) => enum :: Int.t
-  }
-  @type name :: atom
+  @type t :: atom
+  @type spec :: [{t, Int.t}]
   @type xdr :: <<_ :: 32>>
   @type decode_error :: {:error, :invalid_xdr | :invalid_enum}
   @type encode_error :: {:error, :invalid | :invalid_name | :invalid_enum}
@@ -48,7 +46,7 @@ defmodule XDR.Type.Enum do
   @doc """
   Determines if an atom name is valid according to the enum spec
   """
-  @spec valid?(any, enum :: t) :: boolean
+  @spec valid?(any, enum :: spec) :: boolean
   def valid?(name, _) when not is_atom(name), do: false
   def valid?(_, enum) when not is_list(enum), do: false
   def valid?(name, enum), do: Keyword.has_key?(enum, name) and Keyword.get(enum, name) |> Int.valid?
@@ -56,7 +54,7 @@ defmodule XDR.Type.Enum do
   @doc """
   Encodes an atom name and enum spec into the name's enum spec 4-byte binary
   """
-  @spec encode(name :: name, enum :: t) :: {:ok, xdr :: xdr} | encode_error
+  @spec encode(name :: t, enum :: spec) :: {:ok, xdr :: xdr} | encode_error
   def encode(name, _) when not is_atom(name), do: {:error, :invalid_name}
   def encode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
   def encode(name, enum) do
@@ -69,7 +67,7 @@ defmodule XDR.Type.Enum do
   @doc """
   Decodes a 4-byte binary and enum spec into the binary's enum spec name
   """
-  @spec decode(xdr :: xdr, enum :: t) :: {:ok, name :: name} | decode_error
+  @spec decode(xdr :: xdr, enum :: spec) :: {:ok, name :: t} | decode_error
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid_xdr}
   def decode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
   def decode(xdr, enum) do
