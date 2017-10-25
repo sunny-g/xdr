@@ -184,7 +184,7 @@ defmodule XDR.Type.Union do
   end
   defp get_case(discriminant, spec) do
     get_cases(spec)
-      |> Elixir.Enum.find({nil, nil}, fn {case, _} -> case === discriminant end)
+      |> Elixir.Enum.find({nil, nil}, &Kernel.===(elem(&1, 0), discriminant))
       |> elem(1)
   end
 
