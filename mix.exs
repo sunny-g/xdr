@@ -29,7 +29,8 @@ defmodule XDR.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [  {:math, "~> 0.3.0"}
+    [ {:math, "~> 0.3.0"},
+      {:ok, "~> 1.9"},
     ]
   end
 
