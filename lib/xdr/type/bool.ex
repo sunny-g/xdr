@@ -1,5 +1,8 @@
 defmodule XDR.Type.Bool do
-  @type t :: boolean
+  alias XDR.Type.Enum
 
-  use XDR.Type.Enum, spec: [false: 0, true: 1]
+  @type t :: boolean
+  @type xdr :: Enum.xdr
+
+  use Enum, spec: [false: 0, true: 1]
 end
