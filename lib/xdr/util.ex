@@ -20,4 +20,16 @@ defmodule XDR.Util do
   """
   @spec calculate_padding(binary | non_neg_integer) :: non_neg_integer
   def calculate_padding(binary) when is_binary(binary), do: required_padding(binary)
+
+  @doc """
+  Determines
+  """
+  def is_xdr_type_module(atom) when is_atom(atom) do
+    function_exported?(atom, :length, 0)
+    and (function_exported?(atom, :new, 1) or function_exported?(atom, :new, 0))
+    and function_exported?(atom, :valid?, 1)
+    and function_exported?(atom, :encode, 1)
+    and function_exported?(atom, :decode, 1)
+  end
+  def is_xdr_type_module(_), do: false
 end
