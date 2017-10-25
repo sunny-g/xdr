@@ -36,6 +36,8 @@ defmodule XDR.Type.Union do
       def valid?(val), do: unquote(__MODULE__).valid?(val, unquote(spec))
       def encode(val), do: unquote(__MODULE__).encode(val, unquote(spec))
       def decode(val), do: unquote(__MODULE__).decode(val, unquote(spec))
+
+      defoverridable [new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
