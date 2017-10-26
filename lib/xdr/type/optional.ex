@@ -18,6 +18,8 @@ defmodule XDR.Type.Optional do
         ],
       ]
 
+      def length, do: 32
+
       def new(nil), do: {:ok, nil}
       def new(val) do
         case super({true, val}) do
