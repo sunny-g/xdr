@@ -1,45 +1,50 @@
-defmodule XDR.Type.UnionTest do
-  use ExUnit.Case
-  alias XDR.Type.Union
+defmodule XDR.Type.UnionTest.ResultEnum do
   alias XDR.Type.Enum
+
+  use Enum, spec: [
+    ok:       0,
+    error:    1,
+    nonsense: 2,
+  ]
+end
+
+defmodule XDR.Type.UnionTest.Ext do
+  alias XDR.Type.Union
   alias XDR.Type.Int
   alias XDR.Type.Void
 
-  defmodule XDR.Type.UnionTest.ResultEnum do
-    use Enum, spec: [
-      ok:       0,
-      error:    1,
-      nonsense: 2,
-    ]
-  end
+  use Union, spec: [
+    switch: Int,
+    cases: [
+      {0,   Void},
+    ],
+  ]
+end
 
-  defmodule XDR.Type.UnionTest.Ext do
-    use Union, spec: [
-      switch: Int,
-      cases: [
-        {0,   Void},
-      ],
-    ]
-  end
+defmodule XDR.Type.UnionTest.Result do
+  require XDR.Type.UnionTest.ResultEnum
+  alias XDR.Type.UnionTest.ResultEnum
 
-  defmodule XDR.Type.UnionTest.Result do
-    require XDR.Type.UnionTest.ResultEnum
-    alias XDR.Type.UnionTest.ResultEnum
+  alias XDR.Type.Union
+  alias XDR.Type.Int
+  alias XDR.Type.Void
 
-    use Union, spec: [
-      switch:   ResultEnum,
-      cases: [
-        ok:     Void,
-        error:  :code,
-      ],
-      default:  Void,
-      attributes: [
-        code: Int,
-      ],
-    ]
-  end
+  use Union, spec: [
+    switch:   ResultEnum,
+    cases: [
+      ok:     Void,
+      error:  :code,
+    ],
+    default:  Void,
+    attributes: [
+      code:   Int,
+    ],
+  ]
+end
 
-  alias XDR.Type.UnionTest.{ResultEnum, Result, Ext}
+defmodule XDR.Type.UnionTest do
+  use ExUnit.Case
+  alias XDR.Type.UnionTest.{Result, Ext}
 
   test "new" do
     assert Ext.new(0) == {:ok, 0}
