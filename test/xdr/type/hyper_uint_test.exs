@@ -6,6 +6,10 @@ defmodule XDR.Type.HyperUintTest do
   @min_hyper_uint 0
   @max_hyper_uint Math.pow(2, 64) - 1
 
+  test "length" do
+    assert HyperUint.length === 64
+  end
+
   test "new" do
     assert HyperUint.new === {:ok, 0}
     assert HyperUint.new(@min_hyper_uint) === {:ok, @min_hyper_uint}

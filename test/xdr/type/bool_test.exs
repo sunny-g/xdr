@@ -3,6 +3,10 @@ defmodule XDR.Type.BoolTest do
   alias XDR.Type.Bool
   alias XDR.Type.Int
 
+  test "length" do
+    assert Bool.length === 32
+  end
+
   test "new" do
     assert Bool.new(true) == {:ok, true}
     assert Bool.new(false) == {:ok, false}

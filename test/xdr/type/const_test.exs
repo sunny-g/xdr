@@ -18,6 +18,10 @@ defmodule XDR.Type.ConstTest do
 
   alias XDR.Type.ConstTest.DummyConst
 
+  test "length" do
+    assert DummyConst.length === 32
+  end
+
   test "new" do
     assert DummyConst.new == {:ok, 3}
     assert DummyConst.new(3) == {:ok, 3}

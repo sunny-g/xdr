@@ -6,6 +6,10 @@ defmodule XDR.Type.IntTest do
   @min_int -Math.pow(2, 31)
   @max_int Math.pow(2, 31) - 1
 
+  test "length" do
+    assert Int.length === 32
+  end
+
   test "new" do
     assert Int.new === {:ok, 0}
     assert Int.new(0) === {:ok, 0}

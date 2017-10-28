@@ -2,6 +2,10 @@ defmodule XDR.Type.VoidTest do
   use ExUnit.Case
   alias XDR.Type.Void
 
+  test "length" do
+    assert Void.length === 0
+  end
+
   test "new" do
     assert Void.new == {:ok, nil}
     assert Void.new(nil) == {:ok, nil}

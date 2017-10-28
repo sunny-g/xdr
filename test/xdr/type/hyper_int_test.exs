@@ -6,6 +6,10 @@ defmodule XDR.Type.HyperIntTest do
   @min_hyper_int -Math.pow(2, 63)
   @max_hyper_int Math.pow(2, 63) - 1
 
+  test "length" do
+    assert HyperInt.length === 64
+  end
+
   test "new" do
     assert HyperInt.new === {:ok, 0}
     assert HyperInt.new(0) === {:ok, 0}

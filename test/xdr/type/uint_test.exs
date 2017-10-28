@@ -6,6 +6,10 @@ defmodule XDR.Type.UintTest do
   @min_uint 0
   @max_uint Math.pow(2, 32) - 1
 
+  test "length" do
+    assert Uint.length === 32
+  end
+
   test "new" do
     assert Uint.new === {:ok, 0}
     assert Uint.new(@min_uint) === {:ok, @min_uint}

@@ -2,6 +2,10 @@ defmodule XDR.Type.DoubleFloatTest do
   use ExUnit.Case
   alias XDR.Type.DoubleFloat
 
+  test "length" do
+    assert DoubleFloat.length === 64
+  end
+
   test "new" do
     assert DoubleFloat.new === {:ok, 0.0}
     assert DoubleFloat.new(0) === {:ok, 0}

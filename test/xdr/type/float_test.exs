@@ -2,6 +2,10 @@ defmodule XDR.Type.FloatTest do
   use ExUnit.Case
   alias XDR.Type.Float
 
+  test "length" do
+    assert Float.length === 32
+  end
+
   test "new" do
     assert Float.new === {:ok, 0.0}
     assert Float.new(0) === {:ok, 0}

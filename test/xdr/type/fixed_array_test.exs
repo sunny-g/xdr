@@ -1,19 +1,19 @@
+defmodule XDR.Type.FixedArrayTest.Len0 do
+  use XDR.Type.FixedArray, [len: 0, type: XDR.Type.Int]
+end
+
+defmodule XDR.Type.FixedArrayTest.Len1 do
+  use XDR.Type.FixedArray, [len: 1, type: XDR.Type.Int]
+end
+
+defmodule XDR.Type.FixedArrayTest.Len2 do
+  use XDR.Type.FixedArray, [len: 2, type: XDR.Type.Int]
+end
+
 defmodule XDR.Type.FixedArrayTest do
   use ExUnit.Case
-  alias XDR.Type.FixedArray
-  alias XDR.Type.Int
 
-  defmodule XDR.Type.FixedArrayTest.Len0 do
-    use FixedArray, [len: 0, type: Int]
-  end
-
-  defmodule XDR.Type.FixedArrayTest.Len1 do
-    use FixedArray, [len: 1, type: Int]
-  end
-
-  defmodule XDR.Type.FixedArrayTest.Len2 do
-    use FixedArray, [len: 2, type: Int]
-  end
+  alias XDR.Type.FixedArrayTest.{Len0, Len1, Len2}
 
   defmodule XDR.Type.FixedArrayTest.InvalidLength do
     import CompileTimeAssertions
@@ -23,7 +23,11 @@ defmodule XDR.Type.FixedArrayTest do
     end
   end
 
-  alias XDR.Type.FixedArrayTest.{Len0, Len1, Len2}
+  test "length" do
+    assert Len0.length === 0
+    assert Len1.length === 32
+    assert Len2.length === 64
+  end
 
   test "new" do
     assert Len0.new([]) == {:ok, []}
