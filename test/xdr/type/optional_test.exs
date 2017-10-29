@@ -1,13 +1,14 @@
+defmodule XDR.Type.OptionalTest.OptionalInt do
+  use XDR.Type.Optional, for: XDR.Type.Int
+end
+
 defmodule XDR.Type.OptionalTest do
   use ExUnit.Case
-  alias XDR.Type.Optional
-  alias XDR.Type.Int
-
-  defmodule XDR.Type.OptionalTest.OptionalInt do
-    use Optional, for: Int
-  end
-
   alias XDR.Type.OptionalTest.OptionalInt
+
+  test "length" do
+    assert OptionalInt.length === :variable
+  end
 
   test "new" do
     assert OptionalInt.new(0) == {:ok, 0}
@@ -49,11 +50,13 @@ defmodule XDR.Type.OptionalTest do
   end
 
   test "decode" do
-    assert OptionalInt.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, 0}
-    assert OptionalInt.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, 1}
-    assert OptionalInt.decode(<<0, 0, 0, 1, 255, 255, 255, 255>>) == {:ok, -1}
-    assert OptionalInt.decode(<<0, 0, 0, 1, 0, 0, 0, 3>>) == {:ok, 3}
-    assert OptionalInt.decode(<<0, 0, 0, 0>>) == {:ok, nil}
+    assert OptionalInt.decode(<<0, 0, 0, 0>>) == {:ok, {nil, <<>>}}
+    assert OptionalInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {nil, <<0, 0, 0, 0>>}}
+    assert OptionalInt.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {0, <<>>}}
+    assert OptionalInt.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, {1, <<>>}}
+    assert OptionalInt.decode(<<0, 0, 0, 1, 255, 255, 255, 255>>) == {:ok, {-1, <<>>}}
+    assert OptionalInt.decode(<<0, 0, 0, 1, 0, 0, 0, 3>>) == {:ok, {3, <<>>}}
+    assert OptionalInt.decode(<<0, 0, 0, 0>>) == {:ok, {nil, <<>>}}
 
     assert OptionalInt.decode(<<0, 0, 0, 1>>) == {:error, :invalid}
     assert OptionalInt.decode(<<0, 0, 0, 2>>) == {:error, :invalid_enum}
