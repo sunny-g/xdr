@@ -32,7 +32,9 @@ defmodule XDR.Type.VoidTest do
   end
 
   test "decode" do
-    assert Void.decode(<<>>) == {:ok, nil}
+    assert Void.decode(<<>>) == {:ok, {nil, <<>>}}
+    assert Void.decode(<<0, 0, 0, 0>>) == {:ok, {nil, <<0, 0, 0, 0>>}}
+
     assert Void.decode(nil) == {:error, :invalid}
     assert Void.decode(false) == {:error, :invalid}
   end

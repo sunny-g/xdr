@@ -30,7 +30,7 @@ defmodule XDR.Type.Void do
   @doc """
   Decodes an empty binary to nil
   """
-  @spec decode(xdr :: <<>>) :: {:ok, nil} | {:error, :invalid}
-  def decode(<<>>), do: {:ok, nil}
+  @spec decode(xdr :: <<>>) :: {:ok, {native :: t, rest :: <<_ :: 32>>}} | {:error, :invalid}
+  def decode(<<rest :: binary>>), do: {:ok, {nil, rest}}
   def decode(_), do: {:error, :invalid}
 end
