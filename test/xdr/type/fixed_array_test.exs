@@ -67,13 +67,14 @@ defmodule XDR.Type.FixedArrayTest do
   end
 
   test "decode" do
-    assert Len0.decode(<<>>) == {:ok, []}
-    assert Len0.decode(<<0, 0, 0, 0>>) == {:ok, []}
-    assert Len1.decode(<<0, 0, 0, 0>>) == {:ok, [0]}
-    assert Len1.decode(<<0, 0, 0, 1>>) == {:ok, [1]}
-    assert Len2.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, [0, 1]}
-    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, [1, 1]}
-    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 2>>) == {:ok, [1, 2]}
-    assert Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 4>>) == {:ok, [3, 4]}
+    assert Len0.decode(<<>>) == {:ok, {[], <<>>}}
+    assert Len0.decode(<<0, 0, 0, 0>>) == {:ok, {[], <<0, 0, 0, 0>>}}
+    assert Len1.decode(<<0, 0, 0, 0>>) == {:ok, {[0], <<>>}}
+    assert Len1.decode(<<0, 0, 0, 1>>) == {:ok, {[1], <<>>}}
+    assert Len1.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {[1], <<0, 0, 0, 0>>}}
+    assert Len2.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, {[0, 1], <<>>}}
+    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, {[1, 1], <<>>}}
+    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 2>>) == {:ok, {[1, 2], <<>>}}
+    assert Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 4>>) == {:ok, {[3, 4], <<>>}}
   end
 end
