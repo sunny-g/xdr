@@ -1,28 +1,30 @@
 defmodule XDR.Util.Macros do
   defmacro is_valid_xdr?(binary) do
     quote do
-      is_binary(unquote(binary)) and required_padding(unquote(binary)) === 4
+      is_binary(unquote(binary)) and calculate_padding(byte_size(unquote(binary))) === 0
     end
   end
 
+  defmacro calculate_padding(len) do
+    quote do: rem(unquote(len), 4)
+  end
+
   defmacro required_padding(binary) do
-    quote do
-      4 - rem(byte_size(unquote(binary)), 4)
-    end
+    quote do: 4 - calculate_padding(byte_size(unquote(binary)))
   end
 end
 
 defmodule XDR.Util do
-  import XDR.Util.Macros
+  require XDR.Util.Macros
+
+  def required_padding(0), do: 0
+  def required_padding(4), do: 0
+  def required_padding(len) when is_integer(len) do
+    4 - XDR.Util.Macros.calculate_padding(len)
+  end
 
   @doc """
-  Calculates the padding required to pad to a multiple of 4
-  """
-  @spec calculate_padding(binary | non_neg_integer) :: non_neg_integer
-  def calculate_padding(binary) when is_binary(binary), do: required_padding(binary)
-
-  @doc """
-  Determines
+  Determines if the module is a valid XDR Type module (as defined by it's exported functions)
   """
   def is_xdr_type_module(atom) when is_atom(atom) do
     function_exported?(atom, :length, 0)
