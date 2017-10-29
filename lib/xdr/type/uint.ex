@@ -38,7 +38,7 @@ defmodule XDR.Type.Uint do
   @doc """
   Determines if a value is a valid 4-byte unsigned integer
   """
-  @spec valid?(any) :: boolean
+  @spec valid?(t) :: boolean
   def valid?(uint), do: is_valid_uint?(uint)
 
   @doc """
