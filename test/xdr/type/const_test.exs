@@ -49,7 +49,8 @@ defmodule XDR.Type.ConstTest do
   end
 
   test "decode" do
-    assert DummyConst.decode(<<0, 0, 0, 3>>) == {:ok, 3}
+    assert DummyConst.decode(<<0, 0, 0, 3>>) == {:ok, {3, <<>>}}
+    assert DummyConst.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:ok, {3, <<0, 0, 0, 0>>}}
 
     assert DummyConst.decode(<<0, 0, 0, 4>>) == {:error, :invalid_const}
   end

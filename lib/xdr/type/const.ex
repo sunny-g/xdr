@@ -24,7 +24,7 @@ defmodule XDR.Type.Const do
       def encode(unquote(const)), do: {:ok, unquote(const_xdr)}
       def encode(_), do: {:error, :invalid_const}
 
-      def decode(unquote(const_xdr)), do: {:ok, unquote(const)}
+      def decode(<<unquote(const_xdr), rest :: binary>>), do: {:ok, {unquote(const), rest}}
       def decode(_), do: {:error, :invalid_const}
     end
   end
