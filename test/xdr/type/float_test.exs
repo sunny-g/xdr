@@ -42,11 +42,11 @@ defmodule XDR.Type.FloatTest do
   end
 
   test "decode" do
-    assert Float.decode(<<0, 0, 0, 0>>) == {:ok, 0.0}
-    assert Float.decode(<<0, 0, 0, 0>>) == {:ok, -0.0}
-    assert Float.decode(<<128, 0, 0, 0>>) == {:ok, -0.0}
-    assert Float.decode(<<63, 128, 0, 0>>) == {:ok, 1.0}
-    assert Float.decode(<<191, 128, 0, 0>>) == {:ok, -1.0}
+    assert Float.decode(<<0, 0, 0, 0>>) == {:ok, {0.0, <<>>}}
+    assert Float.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0.0, <<0, 0, 0, 0>>}}
+    assert Float.decode(<<128, 0, 0, 0>>) == {:ok, {-0.0, <<>>}}
+    assert Float.decode(<<63, 128, 0, 0>>) == {:ok, {1.0, <<>>}}
+    assert Float.decode(<<191, 128, 0, 0>>) == {:ok, {-1.0, <<>>}}
 
     assert Float.decode(<<127, 192, 0, 0>>) == {:error, :invalid}
     assert Float.decode(<<127, 248, 0, 0>>) == {:error, :invalid}
