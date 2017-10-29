@@ -42,11 +42,12 @@ defmodule XDR.Type.DoubleFloatTest do
   end
 
   test "decode" do
-    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, 0.0}
-    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, -0.0}
-    assert DoubleFloat.decode(<<128, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, -0.0}
-    assert DoubleFloat.decode(<<63, 240, 0, 0, 0, 0, 0, 0>>) == {:ok, 1.0}
-    assert DoubleFloat.decode(<<191, 240, 0, 0, 0, 0, 0, 0>>) == {:ok, -1.0}
+    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0.0, <<>>}}
+    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0.0, <<0, 0, 0, 0>>}}
+    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {-0.0, <<>>}}
+    assert DoubleFloat.decode(<<128, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {-0.0, <<>>}}
+    assert DoubleFloat.decode(<<63, 240, 0, 0, 0, 0, 0, 0>>) == {:ok, {1.0, <<>>}}
+    assert DoubleFloat.decode(<<191, 240, 0, 0, 0, 0, 0, 0>>) == {:ok, {-1.0, <<>>}}
 
     assert DoubleFloat.decode(<<127, 240, 0, 0, 0, 0, 0, 0>>) == {:error, :invalid}
     assert DoubleFloat.decode(<<127, 248, 0, 0, 0, 0, 0, 0>>) == {:error, :invalid}

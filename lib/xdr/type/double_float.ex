@@ -31,7 +31,7 @@ defmodule XDR.Type.DoubleFloat do
   @doc """
   Determines if a value is a valid 8-byte float or integer
   """
-  @spec valid?(any) :: boolean
+  @spec valid?(t) :: boolean
   def valid?(float), do: is_valid_double_float?(float)
 
   @doc """
@@ -46,7 +46,6 @@ defmodule XDR.Type.DoubleFloat do
   """
   @spec decode(xdr :: xdr) :: {:ok, float :: t} | {:error, :invalid | :out_of_bounds}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(xdr) when bit_size(xdr) !== @length, do: {:error, :out_of_bounds}
-  def decode(<<float :: big-signed-float-size(@length)>>), do: {:ok, float}
+  def decode(<<float :: big-signed-float-size(@length), rest :: binary>>), do: {:ok, {float, rest}}
   def decode(_), do: {:error, :invalid}
 end
