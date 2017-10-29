@@ -55,6 +55,7 @@ defmodule XDR.Type.FixedOpaqueTest do
     assert Len1.valid?(<<1>>) == true
     assert Len2.valid?(<<0, 1>>) == true
     assert Len3.valid?(<<0, 0, 0>>) == true
+    assert Len5.valid?(<<0, 0, 0, 0, 0>>) == true
 
     assert Len1.valid?(<<0, 0>>) == false
     assert Len2.valid?(<<0, 0, 0>>) == false
@@ -66,11 +67,15 @@ defmodule XDR.Type.FixedOpaqueTest do
   test "encode" do
     assert Len3.encode(<<0, 0, 0>>) == {:ok, <<0, 0, 0, 0>>}
     assert Len3.encode(<<0, 0, 1>>) == {:ok, <<0, 0, 1, 0>>}
+    assert Len5.encode(<<0, 0, 0, 0, 0>>) == {:ok, <<0, 0, 0, 0, 0, 0, 0, 0>>}
+    assert Len5.encode(<<0, 0, 0, 0, 1>>) == {:ok, <<0, 0, 0, 0, 1, 0, 0, 0>>}
   end
 
   test "decode" do
-    assert Len3.decode(<<0, 0, 0, 0>>) == {:ok, <<0, 0, 0>>}
-    assert Len3.decode(<<0, 0, 1, 0>>) == {:ok, <<0, 0, 1>>}
+    assert Len3.decode(<<0, 0, 0, 0>>) == {:ok, {<<0, 0, 0>>, <<>>}}
+    assert Len3.decode(<<0, 0, 1, 0>>) == {:ok, {<<0, 0, 1>>, <<>>}}
+    assert Len3.decode(<<0, 0, 1, 0, 0, 0, 0, 0>>) == {:ok, {<<0, 0, 1>>, <<0, 0, 0, 0>>}}
+    assert Len5.decode(<<0, 0, 0, 0, 1, 0, 0, 0>>) == {:ok, {<<0, 0, 0, 0, 1>>, <<>>}}
 
     assert Len5.decode(<<0, 0, 0, 0>>) == {:error, :out_of_bounds}
   end
