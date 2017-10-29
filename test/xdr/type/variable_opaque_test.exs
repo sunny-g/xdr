@@ -29,6 +29,13 @@ defmodule XDR.Type.VariableOpaqueTest do
 
   alias XDR.Type.VariableOpaqueTest.{Len1, Len2, Len3, Len4}
 
+  test "length" do
+    assert Len1.length === :variable
+    assert Len2.length === :variable
+    assert Len3.length === :variable
+    assert Len4.length === :variable
+  end
+
   test "new" do
     assert Len1.new == {:ok, <<>>}
     assert Len1.new(<<>>) == {:ok, <<>>}
@@ -67,12 +74,16 @@ defmodule XDR.Type.VariableOpaqueTest do
   end
 
   test "decode" do
-    assert Len2.decode(<<0, 0, 0, 0>>) == {:ok, <<>>}
-    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, <<0>>}
-    assert Len2.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>) == {:ok, <<1>>}
-    assert Len2.decode(<<0, 0, 0, 2, 0, 1, 0, 0>>) == {:ok, <<0, 1>>}
-    assert Len3.decode(<<0, 0, 0, 3, 0, 0, 1, 0>>) == {:ok, <<0, 0, 1>>}
-    assert Len4.decode(<<0, 0, 0, 4, 0, 0, 1, 0>>) == {:ok, <<0, 0, 1, 0>>}
+    assert Len1.decode(<<0, 0, 0, 0>>) == {:ok, {<<>>, <<>>}}
+    assert Len1.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {<<>>, <<0, 0, 0, 0>>}}
+    assert Len1.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>) == {:ok, {<<1>>, <<>>}}
+    assert Len2.decode(<<0, 0, 0, 0>>) == {:ok, {<<>>, <<>>}}
+    assert Len2.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {<<>>, <<0, 0, 0, 0>>}}
+    assert Len2.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {<<0>>, <<>>}}
+    assert Len2.decode(<<0, 0, 0, 1, 1, 0, 0, 0>>) == {:ok, {<<1>>, <<>>}}
+    assert Len2.decode(<<0, 0, 0, 2, 0, 1, 0, 0>>) == {:ok, {<<0, 1>>, <<>>}}
+    assert Len3.decode(<<0, 0, 0, 3, 0, 0, 1, 0>>) == {:ok, {<<0, 0, 1>>, <<>>}}
+    assert Len4.decode(<<0, 0, 0, 4, 0, 0, 1, 0>>) == {:ok, {<<0, 0, 1, 0>>, <<>>}}
 
     assert Len2.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
     assert Len2.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}

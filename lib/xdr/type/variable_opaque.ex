@@ -15,8 +15,10 @@ end
 
 defmodule XDR.Type.VariableOpaque do
   require Math
+  require OK
   import XDR.Util.Macros
   import XDR.Type.VariableOpaque.Validation
+  alias XDR.Type.FixedOpaque
   alias XDR.Type.Uint
 
   @typedoc """
@@ -46,12 +48,14 @@ defmodule XDR.Type.VariableOpaque do
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: unquote(max)
+      def length, do: :variable
       def new, do: unquote(__MODULE__).new
       def new(opaque), do: unquote(__MODULE__).new(opaque, unquote(max))
       def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(max))
       def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(max))
       def decode(opaque), do: unquote(__MODULE__).decode(opaque, unquote(max))
+
+      defoverridable [length: 0, new: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
@@ -63,7 +67,7 @@ defmodule XDR.Type.VariableOpaque do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(any, max :: max) :: boolean
+  @spec valid?(t, max :: max) :: boolean
   def valid?(opaque, max \\ @max)
   def valid?(opaque, max), do: is_valid_variable_opaque?(opaque, max)
 
@@ -73,7 +77,14 @@ defmodule XDR.Type.VariableOpaque do
   @spec encode(opaque :: t, max :: max) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(opaque, max \\ @max)
   def encode(opaque, max) when not is_valid_variable_opaque?(opaque, max), do: {:error, :invalid}
-  def encode(opaque, _), do: {:ok, encode_opaque(opaque, required_padding(opaque))}
+  def encode(opaque, _) do
+    OK.with do
+      len = byte_size(opaque)
+      encoded <- FixedOpaque.encode(opaque, len)
+      encoded_len <- Uint.encode(len)
+      {:ok, encoded_len <> encoded}
+    end
+  end
 
   @doc """
   Decodes a valid variable opaque xdr binary, removing the 4-byte length and any provided padding
@@ -87,30 +98,6 @@ defmodule XDR.Type.VariableOpaque do
   def decode(<<defined_len :: big-unsigned-integer-size(@len_size), rest :: binary>>, _)
       when defined_len > byte_size(rest), do: {:error, :invalid_xdr_length}
   def decode(<<defined_len :: big-unsigned-integer-size(@len_size), rest :: binary>>, _) do
-    <<opaque :: binary-size(defined_len), padding :: binary>> = rest
-    case padding do
-      <<>> -> {:ok, opaque}
-      <<0>> -> {:ok, opaque}
-      <<0, 0>> -> {:ok, opaque}
-      <<0, 0, 0>> -> {:ok, opaque}
-      _ -> {:error, :invalid_padding}
-    end
+    FixedOpaque.decode(rest, defined_len)
   end
-
-  #-------------------------------------------------------------------------#
-  # HELPERS
-  #-------------------------------------------------------------------------#
-  # prepends 4-byte length and appends any necessary padding
-  @spec encode_opaque(opaque :: t, padding_length :: 0..3) :: xdr :: xdr
-  defp encode_opaque(opaque, 0), do: encode_length(opaque) <> opaque
-  defp encode_opaque(opaque, 1), do: encode_length(opaque) <> opaque <> <<0>>
-  defp encode_opaque(opaque, 2), do: encode_length(opaque) <> opaque <> <<0, 0>>
-  defp encode_opaque(opaque, 3), do: encode_length(opaque) <> opaque <> <<0, 0, 0>>
-  defp encode_opaque(opaque, 4), do: encode_length(opaque) <> opaque
-
-  # helper for converting a binary or it's length to a 4-byte binary
-  @spec encode_length(opaque :: t) :: opaque_length :: Uint.xdr
-  defp encode_length(opaque) when is_binary(opaque), do: byte_size(opaque) |> encode_length
-  @spec encode_length(len :: Uint.t) :: opaque_length :: Uint.xdr
-  defp encode_length(len) when is_integer(len), do: Uint.encode(len) |> elem(1)
 end
