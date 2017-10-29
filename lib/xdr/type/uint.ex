@@ -14,10 +14,10 @@ defmodule XDR.Type.Uint.Validation do
 end
 
 defmodule XDR.Type.Uint do
-  @behaviour XDR.Type.Base
-
-  import XDR.Type.Uint.Validation
   import XDR.Util.Macros
+  import XDR.Type.Uint.Validation
+
+  @behaviour XDR.Type.Base
 
   @typedoc """
   Integer between 0 and 2^32 - 1
@@ -52,9 +52,8 @@ defmodule XDR.Type.Uint do
   @doc """
   Decodes a 4-byte binary into an unsigned integer
   """
-  @spec decode(xdr :: xdr) :: {:ok, uint :: t} | {:error, :invalid}
+  @spec decode(xdr :: xdr) :: {:ok, {uint :: t, rest :: xdr}} | {:error, :invalid}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(xdr) when bit_size(xdr) !== @length, do: {:error, :invalid}
-  def decode(<<uint :: big-unsigned-integer-size(@length)>>), do: {:ok, uint}
+  def decode(<<uint :: big-unsigned-integer-size(@length), rest :: binary>>), do: {:ok, {uint, rest}}
   def decode(_), do: {:error, :invalid}
 end

@@ -54,9 +54,10 @@ defmodule XDR.Type.UintTest do
   end
 
   test "decode" do
-    assert Uint.decode(<<0, 0, 0, 1>>) == {:ok, 1}
-    assert Uint.decode(<<0, 0, 0, 0>>) == {:ok, @min_uint}
-    assert Uint.decode(<<255, 255, 255, 255>>) == {:ok, @max_uint}
+    assert Uint.decode(<<0, 0, 0, 1>>) == {:ok, {1, <<>>}}
+    assert Uint.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, {1, <<0, 0, 0, 1>>}}
+    assert Uint.decode(<<0, 0, 0, 0>>) == {:ok, {@min_uint, <<>>}}
+    assert Uint.decode(<<255, 255, 255, 255>>) == {:ok, {@max_uint, <<>>}}
 
     assert Uint.decode("0") == {:error, :invalid}
     assert Uint.decode(<<0, 0, 0, 0, 0>>) == {:error, :invalid}
