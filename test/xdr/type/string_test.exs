@@ -29,6 +29,13 @@ defmodule XDR.Type.StringTest do
 
   alias XDR.Type.StringTest.{Len1, Len2, Len3, Len4}
 
+  test "length" do
+    assert Len1.length === :variable
+    assert Len2.length === :variable
+    assert Len3.length === :variable
+    assert Len4.length === :variable
+  end
+
   test "new" do
     assert Len1.new === {:ok, ""}
     assert Len1.new("") === {:ok, ""}
@@ -71,10 +78,11 @@ defmodule XDR.Type.StringTest do
   end
 
   test "decode" do
-    assert Len4.decode(<<0, 0, 0, 0>>) == {:ok, ""}
-    assert Len4.decode(<<0, 0, 0, 3, 228, 184, 137, 0>>) == {:ok, "三"}
-    assert Len4.decode(<<0, 0, 0, 1, 65, 0, 0, 0>>) == {:ok, "A"}
-    assert Len4.decode(<<0, 0, 0, 2, 65, 65, 0, 0>>) == {:ok, "AA"}
+    assert Len4.decode(<<0, 0, 0, 0>>) == {:ok, {"", <<>>}}
+    assert Len4.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {"", <<0, 0, 0, 0>>}}
+    assert Len4.decode(<<0, 0, 0, 3, 228, 184, 137, 0>>) == {:ok, {"三", <<>>}}
+    assert Len4.decode(<<0, 0, 0, 1, 65, 0, 0, 0>>) == {:ok, {"A", <<>>}}
+    assert Len4.decode(<<0, 0, 0, 2, 65, 65, 0, 0>>) == {:ok, {"AA", <<>>}}
 
     assert Len4.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
     assert Len4.decode(<<255, 255, 255, 255, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}

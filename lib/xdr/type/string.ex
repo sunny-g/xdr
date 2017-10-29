@@ -22,9 +22,9 @@ defmodule XDR.Type.String do
   A bitstrng of max-length 2^32 - 1
   """
   @type t :: String.t
-  @type decode_error :: VariableOpaque.decode_error
-  @type max :: VariableOpaque.max
   @type xdr :: VariableOpaque.xdr
+  @type max :: VariableOpaque.max
+  @type decode_error :: VariableOpaque.decode_error
 
   @max_len Math.pow(2, 32) - 1
 
@@ -38,12 +38,14 @@ defmodule XDR.Type.String do
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: unquote(max_len)
+      def length, do: :variable
       def new, do: unquote(__MODULE__).new
       def new(string), do: unquote(__MODULE__).new(string, unquote(max_len))
       def valid?(string), do: unquote(__MODULE__).valid?(string, unquote(max_len))
       def encode(string), do: unquote(__MODULE__).encode(string, unquote(max_len))
       def decode(string), do: unquote(__MODULE__).decode(string, unquote(max_len))
+
+      defoverridable [length: 0, new: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
@@ -55,7 +57,7 @@ defmodule XDR.Type.String do
   @doc """
   Determines if a value is a bitstring of a valid length
   """
-  @spec valid?(any, max_len :: max) :: boolean
+  @spec valid?(t, max_len :: max) :: boolean
   def valid?(string, max_len \\ @max_len)
   def valid?(string, max_len), do: is_valid_string?(string, max_len)
 
@@ -74,8 +76,11 @@ defmodule XDR.Type.String do
   def decode(xdr, max_len \\ @max_len)
   def decode(xdr, max_len) do
     case VariableOpaque.decode(xdr, max_len) do
-      {:ok, binary} -> {:ok, String.graphemes(binary) |> Enum.join("")}
-      {:error, reason} -> {:error, reason}
+      {:error, reason} ->
+        {:error, reason}
+      {:ok, {binary, rest}} ->
+        result = String.graphemes(binary) |> Enum.join("")
+        {:ok, {result, rest}}
     end
   end
 end
