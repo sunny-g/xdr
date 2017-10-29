@@ -37,12 +37,9 @@ defmodule XDR.Type.BoolTest do
   end
 
   test "decode" do
-    assert Int.encode(0)
-      |> elem(1)
-      |> Bool.decode == {:ok, false}
-    assert Int.encode(1)
-      |> elem(1)
-      |> Bool.decode == {:ok, true}
+    assert Bool.decode(<<0, 0, 0, 0>>) == {:ok, {false, <<>>}}
+    assert Bool.decode(<<0, 0, 0, 1>>) == {:ok, {true, <<>>}}
+    assert Bool.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {true, <<0, 0, 0, 0>>}}
 
     assert Int.decode(2) == {:error, :invalid}
   end

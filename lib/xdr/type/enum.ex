@@ -1,4 +1,5 @@
 defmodule XDR.Type.Enum do
+  require OK
   import XDR.Util.Macros
   alias XDR.Type.Int
 
@@ -36,17 +37,15 @@ defmodule XDR.Type.Enum do
   def length, do: Int.length
 
   @doc false
+  @spec new(name :: t, enum :: spec) :: {:ok, val :: t} | {:error, reason :: :invalid}
   def new(name, enum) do
-    case valid?(name, enum) do
-      true -> {:ok, name}
-      false -> {:error, :invalid}
-    end
+    if valid?(name, enum), do: {:ok, name}, else: {:error, :invalid}
   end
 
   @doc """
   Determines if an atom name is valid according to the enum spec
   """
-  @spec valid?(any, enum :: spec) :: boolean
+  @spec valid?(name :: t, enum :: spec) :: boolean
   def valid?(name, _) when not is_atom(name), do: false
   def valid?(_, enum) when not is_list(enum), do: false
   def valid?(name, enum), do: Keyword.has_key?(enum, name) and Keyword.get(enum, name) |> Int.valid?
@@ -58,9 +57,10 @@ defmodule XDR.Type.Enum do
   def encode(name, _) when not is_atom(name), do: {:error, :invalid_name}
   def encode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
   def encode(name, enum) do
-    case valid?(name, enum) do
-      true -> Keyword.get(enum, name) |> Int.encode
-      false -> {:error, :invalid}
+    unless valid?(name, enum) do
+      {:error, :invalid}
+    else
+      Keyword.get(enum, name) |> Int.encode
     end
   end
 
@@ -71,10 +71,12 @@ defmodule XDR.Type.Enum do
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid_xdr}
   def decode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
   def decode(xdr, enum) do
-    val = Int.decode(xdr) |> elem(1)
-    case Enum.find(enum, fn {_, v} -> match?(^v, val) end) do
-      {k, _} -> {:ok, k}
-      nil -> {:error, :invalid_enum}
+    OK.with do
+      {val, rest} <- Int.decode(xdr)
+      case Enum.find(enum, &Kernel.===(elem(&1, 1), val)) do
+        {k, _} -> {:ok, {k, rest}}
+        nil -> {:error, :invalid_enum}
+      end
     end
   end
 end

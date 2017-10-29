@@ -68,19 +68,12 @@ defmodule XDR.Type.EnumTest do
   end
 
   test "decode" do
-    assert Int.encode(0)
-      |> elem(1)
-      |> DummyEnum.decode == {:ok, :red}
-    assert Int.encode(1)
-      |> elem(1)
-      |> DummyEnum.decode == {:ok, :green}
-    assert Int.encode(3)
-      |> elem(1)
-      |> DummyEnum.decode == {:ok, :evenMoreGreen}
+    assert DummyEnum.decode(<<0, 0, 0, 0>>) == {:ok, {:red, <<>>}}
+    assert DummyEnum.decode(<<0, 0, 0, 1>>) == {:ok, {:green, <<>>}}
+    assert DummyEnum.decode(<<0, 0, 0, 3>>) == {:ok, {:evenMoreGreen, <<>>}}
+    assert DummyEnum.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:ok, {:evenMoreGreen, <<0, 0, 0, 0>>}}
 
-    assert Int.encode(2)
-      |> elem(1)
-      |> DummyEnum.decode == {:error, :invalid_enum}
+    assert DummyEnum.decode(<<0, 0, 0, 2>>) == {:error, :invalid_enum}
     assert DummyEnum.decode(<<0, 0, 1>>) == {:error, :invalid_xdr}
   end
 end
