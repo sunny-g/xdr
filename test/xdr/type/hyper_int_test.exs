@@ -61,11 +61,12 @@ defmodule XDR.Type.HyperIntTest do
   end
 
   test "decode" do
-    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, 0}
-    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, 1}
-    assert HyperInt.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, -1}
-    assert HyperInt.decode(<<128, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, @min_hyper_int}
-    assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, @max_hyper_int}
+    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0, <<>>}}
+    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, {1, <<>>}}
+    assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {1, <<0, 0, 0, 0>>}}
+    assert HyperInt.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, {-1, <<>>}}
+    assert HyperInt.decode(<<128, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {@min_hyper_int, <<>>}}
+    assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, {@max_hyper_int, <<>>}}
 
     assert HyperInt.decode("0") == {:error, :invalid}
     assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:error, :invalid}
