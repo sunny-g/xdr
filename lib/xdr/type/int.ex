@@ -14,10 +14,10 @@ defmodule XDR.Type.Int.Validation do
 end
 
 defmodule XDR.Type.Int do
-  @behaviour XDR.Type.Base
-
   import XDR.Util.Macros
   import XDR.Type.Int.Validation
+
+  @behaviour XDR.Type.Base
 
   @typedoc """
   Integer between -2^31 to 2^31 - 1
@@ -52,9 +52,8 @@ defmodule XDR.Type.Int do
   @doc """
   Decodes a 4-byte binary into an integer
   """
-  @spec decode(xdr :: xdr) :: {:ok, int :: t} | {:error, :invalid}
+  @spec decode(xdr :: xdr) :: {:ok, {int :: t, rest :: xdr}} | {:error, :invalid}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(xdr) when bit_size(xdr) !== @length, do: {:error, :invalid}
-  def decode(<<int :: big-signed-integer-size(@length)>>), do: {:ok, int}
+  def decode(<<int :: big-signed-integer-size(@length), rest :: binary>>), do: {:ok, {int, rest}}
   def decode(_), do: {:error, :invalid}
 end

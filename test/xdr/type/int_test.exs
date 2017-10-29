@@ -61,11 +61,12 @@ defmodule XDR.Type.IntTest do
   end
 
   test "decode" do
-    assert Int.decode(<<0, 0, 0, 0>>) == {:ok, 0}
-    assert Int.decode(<<0, 0, 0, 1>>) == {:ok, 1}
-    assert Int.decode(<<255, 255, 255, 255>>) == {:ok, -1}
-    assert Int.decode(<<128, 0, 0, 0>>) == {:ok, @min_int}
-    assert Int.decode(<<127, 255, 255, 255>>) == {:ok, @max_int}
+    assert Int.decode(<<0, 0, 0, 0>>) == {:ok, {0, <<>>}}
+    assert Int.decode(<<0, 0, 0, 1>>) == {:ok, {1, <<>>}}
+    assert Int.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {1, <<0, 0, 0, 0>>}}
+    assert Int.decode(<<255, 255, 255, 255>>) == {:ok, {-1, <<>>}}
+    assert Int.decode(<<128, 0, 0, 0>>) == {:ok, {@min_int, <<>>}}
+    assert Int.decode(<<127, 255, 255, 255>>) == {:ok, {@max_int, <<>>}}
 
     assert Int.decode("0") == {:error, :invalid}
     assert Int.decode(<<0, 0, 0, 0, 0>>) == {:error, :invalid}
