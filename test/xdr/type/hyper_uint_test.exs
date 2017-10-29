@@ -55,8 +55,9 @@ defmodule XDR.Type.HyperUintTest do
   end
 
   test "decode" do
-    assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, 1}
-    assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, @min_hyper_uint}
-    assert HyperUint.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, @max_hyper_uint}
+    assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, {1, <<>>}}
+    assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {1, <<0, 0, 0, 0>>}}
+    assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {@min_hyper_uint, <<>>}}
+    assert HyperUint.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, {@max_hyper_uint, <<>>}}
   end
 end

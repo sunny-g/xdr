@@ -38,7 +38,7 @@ defmodule XDR.Type.HyperUint do
   @doc """
   Determines if a value is a valid 8-byte hyper unsigned integer
   """
-  @spec valid?(any) :: boolean
+  @spec valid?(t) :: boolean
   def valid?(hyper_uint), do: is_valid_hyper_uint?(hyper_uint)
 
   @doc """
@@ -54,7 +54,6 @@ defmodule XDR.Type.HyperUint do
   """
   @spec decode(xdr :: xdr) :: {:ok, hyper_uint :: t} | {:error, :invalid}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(xdr) when bit_size(xdr) !== @length, do: {:error, :invalid}
-  def decode(<<hyper_uint :: big-unsigned-integer-size(@length)>>), do: {:ok, hyper_uint}
+  def decode(<<hyper_uint :: big-unsigned-integer-size(@length), rest :: binary>>), do: {:ok, {hyper_uint, rest}}
   def decode(_), do: {:error, :invalid}
 end
