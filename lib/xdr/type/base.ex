@@ -6,7 +6,7 @@ defmodule XDR.Type.Base do
   @doc """
   Returns the expected length (in bits) of an XDR-encoded binary of this type (sans padding)
   """
-  @callback length :: non_neg_integer
+  @callback length :: non_neg_integer | :struct | :union | :variable
 
   @doc """
   Returns the input if it's a valid XDR module native type, or a default valid native type
@@ -24,9 +24,9 @@ defmodule XDR.Type.Base do
   @callback encode(native :: t) :: {:ok, xdr :: xdr} | {:error, reason :: error}
 
   @doc """
-  Decodes an XDR binary to a native type
+  Decodes an XDR binary to a native type, also returns any remaining binary
   """
-  @callback decode(xdr :: xdr) :: {:ok, native :: t} | {:error, reason :: error}
+  @callback decode(xdr :: xdr) :: {:ok, {native :: t, rest :: binary}} | {:error, reason :: error}
 
-  @optional_callbacks new: 0
+  @optional_callbacks [length: 1, new: 0]
 end
