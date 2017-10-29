@@ -1,6 +1,8 @@
 defmodule XDR.Type.VariableArray do
   require Math
+  require OK
   import XDR.Util.Macros
+  alias XDR.Type.FixedArray
   alias XDR.Type.Uint
 
   @typedoc """
@@ -25,28 +27,27 @@ defmodule XDR.Type.VariableArray do
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: unquote(max)
+      def length, do: :variable
       def new, do: unquote(__MODULE__).new([], unquote(type), unquote(max))
       def new(array), do: unquote(__MODULE__).new(array, unquote(type), unquote(max))
       def valid?(array), do: unquote(__MODULE__).valid?(array, unquote(type), unquote(max))
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(max))
       def decode(array), do: unquote(__MODULE__).decode(array, unquote(type), unquote(max))
+
+      defoverridable [length: 0, new: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
   @doc false
   def new(array, type, max \\ @max_len)
   def new(array, type, max) do
-    case valid?(array, type, max) do
-      true -> {:ok, array}
-      false -> {:error, :invalid}
-    end
+    if valid?(array, type, max), do: {:ok, array}, else: {:error, :invalid}
   end
 
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(any, type :: module, max :: max) :: boolean
+  @spec valid?(t, type :: module, max :: max) :: boolean
   def valid?(array, type, max \\ @max_len)
   def valid?(array, type, max) do
     is_list(array)
@@ -63,9 +64,15 @@ defmodule XDR.Type.VariableArray do
   @spec encode(array :: t, type :: module, max :: max) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(array, type, max \\ @max_len)
   def encode(array, type, max) do
-    case valid?(array, type, max) do
-      true -> {:ok, array_to_xdr(array, type, max)}
-      false -> {:error, :invalid}
+    unless valid?(array, type, max) do
+      {:error, :invalid}
+    else
+      OK.with do
+        len = length(array)
+        encoded <- FixedArray.encode(array, type, len)
+        encoded_len <- Uint.encode(len)
+        {:ok, encoded_len <> encoded}
+      end
     end
   end
 
@@ -80,50 +87,7 @@ defmodule XDR.Type.VariableArray do
       when xdr_len > max, do: {:error, :xdr_length_exceeds_defined_max}
   def decode(<<xdr_len :: big-unsigned-integer-size(@len_size), rest :: binary>>, _, _)
       when (xdr_len * 4) > byte_size(rest), do: {:error, :invalid_xdr_length}
-  def decode(xdr, type, max), do: xdr_to_array(xdr, type, max)
-
-  #-------------------------------------------------------------------------#
-  # HELPERS
-  #-------------------------------------------------------------------------#
-  # reduces each array element into an encoded binary
-  defp array_to_xdr(array, type, max) do
-    Enum.reduce(array, <<max :: big-unsigned-integer-size(@len_size)>>, fn(elem, xdr) ->
-      encoded_elem = type.encode(elem) |> elem(1)
-      xdr <> encoded_elem
-    end)
-  end
-
-  # decodes each element of a binary
-  defp xdr_to_array(<<xdr_len :: big-unsigned-integer-size(@len_size), xdr :: binary>>, type, _) do
-    decoded = case function_exported?(type, :length, 0) do
-      true -> decode_fixed_type(xdr, type, xdr_len, [])
-      false -> decode_variable_type(xdr, type, xdr_len, [])
-    end
-
-    if is_list(decoded), do: {:ok, Enum.reverse(decoded)}, else: {:error, decoded}
-  end
-
-  # decodes an XDR of fixed type elements
-  defp decode_fixed_type(_, _, 0, array), do: array
-  defp decode_fixed_type(xdr, type, array_length, array) do
-    elem_length = type.length
-    <<elem :: bits-size(elem_length), rest :: binary>> = xdr
-
-    case type.decode(elem) do
-      {:ok, val} -> decode_fixed_type(rest, type, array_length - 1, [val | array])
-      {:error, reason} -> reason
-    end
-  end
-
-  # decodes an XDR of variable type elements
-  defp decode_variable_type(_, _, 0, array), do: array
-  defp decode_variable_type(xdr, type, array_length, array) do
-    <<elem_length :: big-unsigned-integer-size(@len_size), rest :: binary>> = xdr
-    <<elem :: bits-size(elem_length), _padding :: binary>> = rest
-
-    case type.decode(elem) do
-      {:ok, val} -> decode_variable_type(rest, type, array_length - 1, [val | array])
-      {:error, reason} -> reason
-    end
+  def decode(<<xdr_len :: big-unsigned-integer-size(@len_size), rest :: binary>>, type, _) do
+    FixedArray.decode(rest, type, xdr_len)
   end
 end

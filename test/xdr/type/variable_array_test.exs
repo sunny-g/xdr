@@ -25,6 +25,12 @@ defmodule XDR.Type.VariableArrayTest do
 
   alias XDR.Type.VariableArrayTest.{Max0, Max1, Max2}
 
+  test "length" do
+    assert Max0.length === :variable
+    assert Max1.length === :variable
+    assert Max2.length === :variable
+  end
+
   test "new" do
     assert Max0.new == {:ok, []}
     assert Max0.new([]) == {:ok, []}
@@ -60,11 +66,12 @@ defmodule XDR.Type.VariableArrayTest do
   end
 
   test "decode" do
-    assert Max0.decode(<<0, 0, 0, 0>>) == {:ok, []}
-    assert Max1.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, [0]}
-    assert Max2.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, [1]}
-    assert Max2.decode(<<0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2>>) == {:ok, [1, 2]}
-    assert Max2.decode(<<0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4>>) == {:ok, [3, 4]}
+    assert Max0.decode(<<0, 0, 0, 0>>) == {:ok, {[], <<>>}}
+    assert Max0.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, {[], <<0, 0, 0, 1>>}}
+    assert Max1.decode(<<0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {[0], <<>>}}
+    assert Max2.decode(<<0, 0, 0, 1, 0, 0, 0, 1>>) == {:ok, {[1], <<>>}}
+    assert Max2.decode(<<0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2>>) == {:ok, {[1, 2], <<>>}}
+    assert Max2.decode(<<0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4>>) == {:ok, {[3, 4], <<>>}}
 
     assert Max2.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
     assert Max2.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}
