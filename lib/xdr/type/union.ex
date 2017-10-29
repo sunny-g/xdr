@@ -30,14 +30,14 @@ defmodule XDR.Type.Union do
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: 32
+      def length, do: :union
       def new, do: unquote(__MODULE__).new(unquote(spec))
       def new(val), do: unquote(__MODULE__).new(val, unquote(spec))
       def valid?(val), do: unquote(__MODULE__).valid?(val, unquote(spec))
       def encode(val), do: unquote(__MODULE__).encode(val, unquote(spec))
       def decode(val), do: unquote(__MODULE__).decode(val, unquote(spec))
 
-      defoverridable [new: 1, valid?: 1, encode: 1, decode: 1]
+      defoverridable [length: 0, new: 0, new: 1, valid?: 1, encode: 1, decode: 1]
     end
   end
 
@@ -60,7 +60,7 @@ defmodule XDR.Type.Union do
   @doc """
   Determines if the discriminant (and if provided, the optional val) can be encoded into a valid union
   """
-  @spec valid?({discriminant, any} | discriminant, spec :: spec) :: boolean
+  @spec valid?(t, spec :: spec) :: boolean
   def valid?({discriminant, val}, spec) do
     switch_module = get_switch(spec)
     arm_module = get_arm_module(discriminant, spec)
@@ -135,13 +135,13 @@ defmodule XDR.Type.Union do
     switch_module = get_switch(spec)
 
     OK.with do
-      discriminant <- switch_module.decode(discriminant_xdr)
-      arm <- decode_arm(discriminant, arm_xdr, spec)
+      {discriminant, _} <- switch_module.decode(discriminant_xdr)
+      {arm, rest} <- decode_arm(discriminant, arm_xdr, spec)
 
-      if is_nil(arm) and byte_size(arm_xdr) === 0 do
-        {:ok, discriminant}
+      if is_nil(arm) and arm_xdr === rest do
+        {:ok, {discriminant, rest}}
       else
-        {:ok, {discriminant, arm}}
+        {:ok, {{discriminant, arm}, rest}}
       end
     end
   end

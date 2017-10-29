@@ -1,7 +1,5 @@
 defmodule XDR.Type.UnionTest.ResultEnum do
-  alias XDR.Type.Enum
-
-  use Enum, spec: [
+  use XDR.Type.Enum, spec: [
     ok:       0,
     error:    1,
     nonsense: 2,
@@ -9,35 +7,26 @@ defmodule XDR.Type.UnionTest.ResultEnum do
 end
 
 defmodule XDR.Type.UnionTest.Ext do
-  alias XDR.Type.Union
-  alias XDR.Type.Int
-  alias XDR.Type.Void
-
-  use Union, spec: [
-    switch: Int,
+  use XDR.Type.Union, spec: [
+    switch: XDR.Type.Int,
     cases: [
-      {0,   Void},
+      {0,   XDR.Type.Void},
     ],
   ]
 end
 
 defmodule XDR.Type.UnionTest.Result do
   require XDR.Type.UnionTest.ResultEnum
-  alias XDR.Type.UnionTest.ResultEnum
 
-  alias XDR.Type.Union
-  alias XDR.Type.Int
-  alias XDR.Type.Void
-
-  use Union, spec: [
-    switch:   ResultEnum,
+  use XDR.Type.Union, spec: [
+    switch:   XDR.Type.UnionTest.ResultEnum,
     cases: [
-      ok:     Void,
+      ok:     XDR.Type.Void,
       error:  :code,
     ],
-    default:  Void,
+    default:  XDR.Type.Void,
     attributes: [
-      code:   Int,
+      code:   XDR.Type.Int,
     ],
   ]
 end
@@ -45,6 +34,11 @@ end
 defmodule XDR.Type.UnionTest do
   use ExUnit.Case
   alias XDR.Type.UnionTest.{Result, Ext}
+
+  test "length" do
+    assert Ext.length === :union
+    assert Result.length === :union
+  end
 
   test "new" do
     assert Ext.new(0) == {:ok, 0}
@@ -94,10 +88,13 @@ defmodule XDR.Type.UnionTest do
   end
 
   test "decode" do
-    assert Ext.decode(<<0, 0, 0, 0>>) == {:ok, 0}
-    assert Result.decode(<<0, 0, 0, 0>>) == {:ok, :ok}
-    assert Result.decode(<<0, 0, 0, 1, 0, 0, 0, 5>>) == {:ok, {:error, 5}}
-    assert Result.decode(<<0, 0, 0, 2>>) == {:ok, :nonsense}
+    assert Ext.decode(<<0, 0, 0, 0>>) == {:ok, {0, <<>>}}
+    assert Ext.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0, <<0, 0, 0, 0>>}}
+    assert Result.decode(<<0, 0, 0, 0>>) == {:ok, {:ok, <<>>}}
+    assert Result.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {:ok, <<0, 0, 0, 0>>}}
+    assert Result.decode(<<0, 0, 0, 1, 0, 0, 0, 5>>) == {:ok, {{:error, 5}, <<>>}}
+    assert Result.decode(<<0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 2>>) == {:ok, {{:error, 5}, <<0, 0, 0, 2>>}}
+    assert Result.decode(<<0, 0, 0, 2>>) == {:ok, {:nonsense, <<>>}}
 
     assert Ext.decode(<<0, 0, 0, 1>>) == {:error, :invalid}
     assert Result.decode(<<0, 0, 0, 1>>) == {:error, :invalid}
