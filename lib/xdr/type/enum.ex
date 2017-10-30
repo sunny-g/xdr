@@ -1,14 +1,18 @@
 defmodule XDR.Type.Enum do
+  @moduledoc """
+  RFC 4506, Section 4.3 - Enumeration
+  """
+
   require OK
   import XDR.Util.Macros
-  alias XDR.Type.Int
+  alias XDR.Type.{Base, Uint}
 
   @typedoc """
-  A map or struct defining the spec for an Enum, where values are 4-byte integers
+  A keyword list defining the spec for an Enum, where values are 4-byte integers
   """
   @type t :: atom
-  @type spec :: [{t, Int.t}]
-  @type xdr :: <<_ :: 32>>
+  @type spec :: [{t, Uint.t}]
+  @type xdr :: Base.xdr
   @type decode_error :: {:error, :invalid_xdr | :invalid_enum}
   @type encode_error :: {:error, :invalid | :invalid_name | :invalid_enum}
 
@@ -34,10 +38,10 @@ defmodule XDR.Type.Enum do
   end
 
   @doc false
-  def length, do: Int.length
+  def length, do: Uint.length
 
   @doc false
-  @spec new(name :: t, enum :: spec) :: {:ok, val :: t} | {:error, reason :: :invalid}
+  @spec new(name :: t, enum :: spec) :: {:ok, name :: t} | {:error, reason :: :invalid}
   def new(name, enum) do
     if valid?(name, enum), do: {:ok, name}, else: {:error, :invalid}
   end
@@ -48,7 +52,7 @@ defmodule XDR.Type.Enum do
   @spec valid?(name :: t, enum :: spec) :: boolean
   def valid?(name, _) when not is_atom(name), do: false
   def valid?(_, enum) when not is_list(enum), do: false
-  def valid?(name, enum), do: Keyword.has_key?(enum, name) and Keyword.get(enum, name) |> Int.valid?
+  def valid?(name, enum), do: Keyword.has_key?(enum, name) and Keyword.get(enum, name) |> Uint.valid?
 
   @doc """
   Encodes an atom name and enum spec into the name's enum spec 4-byte binary
@@ -60,19 +64,19 @@ defmodule XDR.Type.Enum do
     unless valid?(name, enum) do
       {:error, :invalid}
     else
-      Keyword.get(enum, name) |> Int.encode
+      Keyword.get(enum, name) |> Uint.encode
     end
   end
 
   @doc """
   Decodes a 4-byte binary and enum spec into the binary's enum spec name
   """
-  @spec decode(xdr :: xdr, enum :: spec) :: {:ok, name :: t} | decode_error
+  @spec decode(xdr :: xdr, enum :: spec) :: {:ok, {name :: t, rest :: Base.xdr}} | decode_error
   def decode(xdr, _) when not is_valid_xdr?(xdr), do: {:error, :invalid_xdr}
   def decode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
   def decode(xdr, enum) do
     OK.with do
-      {val, rest} <- Int.decode(xdr)
+      {val, rest} <- Uint.decode(xdr)
       case Enum.find(enum, &Kernel.===(elem(&1, 1), val)) do
         {k, _} -> {:ok, {k, rest}}
         nil -> {:error, :invalid_enum}

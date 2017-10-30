@@ -1,7 +1,14 @@
 defmodule XDR.Type.Optional do
-  alias XDR.Type.Bool
-  alias XDR.Type.Union
-  alias XDR.Type.Void
+  @moduledoc """
+  RFC 4506, Section 4.19 - Optional data
+  """
+
+  alias XDR.Type.{
+    Base,
+    Bool,
+    Union,
+    Void,
+  }
 
   defmacro __using__(for: for) do
     quote do
@@ -9,7 +16,7 @@ defmodule XDR.Type.Optional do
 
       @type t :: nil | any
       @type for :: module
-      @type xdr :: <<_ :: 32>>
+      @type xdr :: Base.xdr
 
       use Union, spec: [
         switch: Bool,
@@ -24,7 +31,7 @@ defmodule XDR.Type.Optional do
 
       def length, do: :variable
 
-      @spec new(val :: t) :: {:ok, val :: t} | {:error, reason :: atom}
+      @spec new(val :: t) :: {:ok, val :: t} | {:error, reason :: Base.error}
       def new(nil), do: {:ok, nil}
       def new(val) do
         case super({true, val}) do
@@ -39,11 +46,11 @@ defmodule XDR.Type.Optional do
       def valid?(nil), do: super(false)
       def valid?(val), do: super({true, val})
 
-      @spec encode(val :: t) :: {:ok, xdr :: xdr} | {:error, reason :: atom}
+      @spec encode(val :: t) :: {:ok, xdr :: xdr} | {:error, reason :: Base.error}
       def encode(nil), do: super(false)
       def encode(val), do: super({true, val})
 
-      @spec decode(xdr :: xdr) :: {:ok, val :: t} | {:error, reason :: atom}
+      @spec decode(xdr :: xdr) :: {:ok, {val :: t, rest :: Base.xdr}} | {:error, reason :: atom}
       def decode(xdr) do
         case super(xdr) do
           {:ok, {false, rest}} ->

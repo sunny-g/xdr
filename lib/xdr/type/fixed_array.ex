@@ -1,4 +1,9 @@
 defmodule XDR.Type.FixedArray do
+  @moduledoc """
+  RFC 4506, Section 4.12 - Fixed-length Array
+  """
+
+  alias XDR.Type.Base
   import XDR.Util.Macros
 
   @typedoc """
@@ -6,7 +11,7 @@ defmodule XDR.Type.FixedArray do
   """
   @type t :: list
   @type len :: non_neg_integer
-  @type xdr :: <<_ :: _*32>>
+  @type xdr :: Base.xdr
   @type decode_error :: {:error, reason :: :invalid | :xdr_too_small}
 
   defmacro __using__([len: len, type: type]) do
@@ -32,6 +37,7 @@ defmodule XDR.Type.FixedArray do
   end
 
   @doc false
+  @spec new(array :: t, type :: module, len :: len) :: {:ok, array :: t} | {:error, :invalid}
   def new(array, type, len \\ 0)
   def new(array, type, len) do
     case valid?(array, type, len) do
@@ -43,7 +49,7 @@ defmodule XDR.Type.FixedArray do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(t, type :: module, len :: len) :: boolean
+  @spec valid?(array :: t, type :: module, len :: len) :: boolean
   def valid?(array, type, len) do
     is_list(array)
     and is_atom(type)
@@ -63,7 +69,7 @@ defmodule XDR.Type.FixedArray do
   @doc """
   Decodes an fixed array xdr binary by truncating it to the desired length
   """
-  @spec decode(xdr :: xdr, type :: module, len :: len) :: {:ok, array :: t} | decode_error
+  @spec decode(xdr :: xdr, type :: module, len :: len) :: {:ok, {array :: t, rest :: Base.xdr}} | decode_error
   def decode(xdr, _, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(xdr, _, len) when (len * 4) > byte_size(xdr), do: {:error, :xdr_too_small}
   def decode(xdr, type, len), do: xdr_to_array(xdr, type, len)

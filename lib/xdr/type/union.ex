@@ -1,8 +1,13 @@
 defmodule XDR.Type.Union do
+  @moduledoc """
+  RFC 4506, Section 4.15 - Discriminated Union
+  """
+
   require OK
   import OK, only: ["~>>": 2]
-  import XDR.Util, only: ["is_xdr_type_module": 1]
+  import XDR.Util
   alias XDR.Type.{
+    Base,
     Int,
     Uint,
     Enum,
@@ -10,9 +15,6 @@ defmodule XDR.Type.Union do
     Void,
   }
 
-  # @typedoc """
-  # The spec that defines a valid Union XDR type
-  # """
   @type t :: discriminant | {discriminant, val :: discriminant}
   @type spec :: [
     {:switch,     switch},
@@ -20,7 +22,7 @@ defmodule XDR.Type.Union do
     {:default,    switch},
     {:attributes, attributes}
   ]
-  @type xdr :: <<_ :: 32>>
+  @type xdr           :: Base.xdr
   @type discriminant  :: Int.t | Uint.t | Enum.t | Bool.t
   @type switch        :: Int | Uint | Enum | Bool | module
   @type cases         :: [{discriminant, val :: switch | Void | atom}]
@@ -42,14 +44,14 @@ defmodule XDR.Type.Union do
   end
 
   @doc false
-  @spec new(spec :: spec) :: {:ok, native :: t} | {:error, reason :: :invalid}
+  @spec new(spec :: spec) :: {:ok, discriminant :: t} | {:error, reason :: :invalid}
   def new(spec) do
     default_module = get_default(spec)
     has_default = not is_nil(default_module)
 
     if has_default, do: default_module.new, else: {:error, :invalid}
   end
-  @spec new(native :: t, spec :: spec) :: {:ok, native :: t} | {:error, reason :: :invalid}
+  @spec new(discriminant :: t, spec :: spec) :: {:ok, discriminant :: t} | {:error, reason :: :invalid}
   def new({discriminant, val}, spec) do
     if valid?({discriminant, val}, spec), do: {:ok, {discriminant, val}}, else: {:error, :invalid}
   end
@@ -60,7 +62,7 @@ defmodule XDR.Type.Union do
   @doc """
   Determines if the discriminant (and if provided, the optional val) can be encoded into a valid union
   """
-  @spec valid?(t, spec :: spec) :: boolean
+  @spec valid?(discriminant :: t, spec :: spec) :: boolean
   def valid?({discriminant, val}, spec) do
     switch_module = get_switch(spec)
     arm_module = get_arm_module(discriminant, spec)
@@ -84,7 +86,7 @@ defmodule XDR.Type.Union do
   @doc """
   Encodes a discriminant or {discriminant, value} tuple into an XDR binary
   """
-  @spec encode(native :: t, spec :: spec) :: {:ok, xdr :: xdr} | {:error, reason :: :invalid}
+  @spec encode(discriminant :: t, spec :: spec) :: {:ok, xdr :: xdr} | {:error, reason :: :invalid}
   def encode({discriminant, val}, spec) do
     switch_module = get_switch(spec)
     attribute_module = get_attribute(discriminant, spec)
@@ -130,7 +132,7 @@ defmodule XDR.Type.Union do
   @doc """
   Decodes an XDR binary into a discriminant or {discriminant, value} tuple
   """
-  @spec decode(xdr :: xdr, spec :: spec) :: {:ok, native :: t} | {:error, reason :: :invalid}
+  @spec decode(xdr :: xdr, spec :: spec) :: {:ok, {discriminant :: t, rest :: Base.xdr}} | {:error, reason :: :invalid}
   def decode(<<discriminant_xdr :: binary-size(4), arm_xdr :: binary>>, spec) do
     switch_module = get_switch(spec)
 

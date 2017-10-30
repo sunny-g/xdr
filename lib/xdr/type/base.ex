@@ -1,6 +1,10 @@
 defmodule XDR.Type.Base do
+  @moduledoc """
+  Base behaviour for XDR type modules
+  """
+
   @type t :: any
-  @type xdr :: <<_::_*32>>
+  @type xdr :: <<_ :: _*32>>
   @type error :: atom | String.t
 
   @doc """
@@ -9,14 +13,14 @@ defmodule XDR.Type.Base do
   @callback length :: non_neg_integer | :struct | :union | :variable
 
   @doc """
-  Returns the input if it's a valid XDR module native type, or a default valid native type
+  Returns the input if it's a valid XDR module native type, or the default valid native type
   """
-  @callback new(any) :: {:ok, native :: t} | {:error, reason :: error}
+  @callback new(native :: t) :: {:ok, native :: t} | {:error, reason :: error}
 
   @doc """
   Determines if a value is a valid XDR type
   """
-  @callback valid?(any) :: boolean
+  @callback valid?(native :: t) :: boolean
 
   @doc """
   Encodes a native type to an XDR binary
@@ -24,9 +28,9 @@ defmodule XDR.Type.Base do
   @callback encode(native :: t) :: {:ok, xdr :: xdr} | {:error, reason :: error}
 
   @doc """
-  Decodes an XDR binary to a native type, also returns any remaining binary
+  Decodes an XDR binary to a native type, also returns any un-decoded binary
   """
-  @callback decode(xdr :: xdr) :: {:ok, {native :: t, rest :: binary}} | {:error, reason :: error}
+  @callback decode(xdr :: xdr) :: {:ok, {native :: t, rest :: xdr}} | {:error, reason :: error}
 
   @optional_callbacks [length: 1, new: 0]
 end

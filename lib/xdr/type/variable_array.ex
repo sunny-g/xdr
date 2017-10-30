@@ -1,16 +1,23 @@
 defmodule XDR.Type.VariableArray do
+  @moduledoc """
+  RFC 4506, Section 4.13 - Variable-length Array
+  """
+
   require Math
   require OK
   import XDR.Util.Macros
-  alias XDR.Type.FixedArray
-  alias XDR.Type.Uint
+  alias XDR.Type.{
+    Base,
+    FixedArray,
+    Uint,
+  }
 
   @typedoc """
   A binary of any length
   """
   @type t :: list
   @type max :: Uint.t
-  @type xdr :: <<_ :: _*32>>
+  @type xdr :: Base.xdr
   @type decode_error :: {:error, :invalid | :xdr_too_small}
 
   @len_size 32
@@ -39,6 +46,7 @@ defmodule XDR.Type.VariableArray do
   end
 
   @doc false
+  @spec new(array :: t, type :: module, max :: max) :: {:ok, array :: t} | {:error, reason :: :invalid}
   def new(array, type, max \\ @max_len)
   def new(array, type, max) do
     if valid?(array, type, max), do: {:ok, array}, else: {:error, :invalid}
@@ -47,7 +55,7 @@ defmodule XDR.Type.VariableArray do
   @doc """
   Determines if a value is a binary of a valid length
   """
-  @spec valid?(t, type :: module, max :: max) :: boolean
+  @spec valid?(array :: t, type :: module, max :: max) :: boolean
   def valid?(array, type, max \\ @max_len)
   def valid?(array, type, max) do
     is_list(array)
@@ -79,7 +87,7 @@ defmodule XDR.Type.VariableArray do
   @doc """
   Decodes an fixed array xdr binary by truncating it to the desired length
   """
-  @spec decode(xdr :: xdr, type :: module, max :: max) :: {:ok, array :: t} | decode_error
+  @spec decode(xdr :: xdr, type :: module, max :: max) :: {:ok, {array :: t, rest :: Base.xdr}} | decode_error
   def decode(xdr, type, max \\ @max_len)
   def decode(xdr, _, _) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(_, _, max) when max > @max_len, do: {:error, :max_length_too_large}

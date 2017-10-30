@@ -1,4 +1,10 @@
 defmodule XDR.Type.Void do
+  @moduledoc """
+  RFC 4506, Section 4.16 - Void
+  """
+
+  alias XDR.Type.Base
+
   @behaviour XDR.Type.Base
 
   @typedoc """
@@ -31,7 +37,8 @@ defmodule XDR.Type.Void do
   @doc """
   Decodes an empty binary to nil
   """
-  @spec decode(xdr :: <<>>) :: {:ok, {native :: t, rest :: xdr}} | {:error, :invalid}
+  @spec decode(xdr :: <<>>) :: {:ok, {native :: t, rest :: Base.xdr}} | {:error, :invalid}
+  def decode(<<>>), do: {:ok, {nil, <<>>}}
   def decode(<<rest :: binary>>), do: {:ok, {nil, rest}}
   def decode(_), do: {:error, :invalid}
 end

@@ -1,4 +1,6 @@
 defmodule XDR.Type.Int.Validation do
+  @moduledoc false
+
   require Math
 
   @min_int -Math.pow(2, 31)
@@ -14,6 +16,11 @@ defmodule XDR.Type.Int.Validation do
 end
 
 defmodule XDR.Type.Int do
+  @moduledoc """
+  RFC 4506, Section 4.1 - Integer
+  """
+
+  alias XDR.Type.Base
   import XDR.Util.Macros
   import XDR.Type.Int.Validation
 
@@ -23,7 +30,7 @@ defmodule XDR.Type.Int do
   Integer between -2^31 to 2^31 - 1
   """
   @type t :: -2147483648..2147483647
-  @type xdr :: <<_ :: 32>>
+  @type xdr :: Base.xdr
 
   @length 32
 
@@ -31,6 +38,7 @@ defmodule XDR.Type.Int do
   def length, do: @length
 
   @doc false
+  @spec new(int :: t) :: {:ok, int :: t} | {:error, :invalid}
   def new(int \\ 0)
   def new(int) when is_valid_int?(int), do: {:ok, int}
   def new(_), do: {:error, :invalid}
@@ -38,7 +46,7 @@ defmodule XDR.Type.Int do
   @doc """
   Determines if a value is a valid 4-byte integer
   """
-  @spec valid?(t) :: boolean
+  @spec valid?(int :: t) :: boolean
   def valid?(int), do: is_valid_int?(int)
 
   @doc """
@@ -52,7 +60,7 @@ defmodule XDR.Type.Int do
   @doc """
   Decodes a 4-byte binary into an integer
   """
-  @spec decode(xdr :: xdr) :: {:ok, {int :: t, rest :: xdr}} | {:error, :invalid}
+  @spec decode(xdr :: xdr) :: {:ok, {int :: t, rest :: Base.xdr}} | {:error, :invalid}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
   def decode(<<int :: big-signed-integer-size(@length), rest :: binary>>), do: {:ok, {int, rest}}
   def decode(_), do: {:error, :invalid}

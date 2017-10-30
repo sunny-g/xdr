@@ -1,4 +1,6 @@
 defmodule XDR.Type.String.Validation do
+  @moduledoc false
+
   require Math
 
   @max_len Math.pow(2, 32) - 1
@@ -14,8 +16,13 @@ defmodule XDR.Type.String.Validation do
 end
 
 defmodule XDR.Type.String do
+  @moduledoc """
+  RFC 4506, Section 4.11 - String
+  """
+
   require Math
   import XDR.Type.String.Validation
+  alias XDR.Type.Base
   alias XDR.Type.VariableOpaque
 
   @typedoc """
@@ -50,6 +57,7 @@ defmodule XDR.Type.String do
   end
 
   @doc false
+  @spec new(string :: t, max_len :: max) :: {:ok, string :: t} | {:error, :invalid}
   def new(string \\ "", max_len \\ @max_len)
   def new(string, max_len) when is_valid_string?(string, max_len), do: {:ok, string}
   def new(_, _), do: {:error, :invalid}
@@ -57,7 +65,7 @@ defmodule XDR.Type.String do
   @doc """
   Determines if a value is a bitstring of a valid length
   """
-  @spec valid?(t, max_len :: max) :: boolean
+  @spec valid?(string :: t, max_len :: max) :: boolean
   def valid?(string, max_len \\ @max_len)
   def valid?(string, max_len), do: is_valid_string?(string, max_len)
 
@@ -72,7 +80,7 @@ defmodule XDR.Type.String do
   @doc """
   Decodes a valid string xdr binary, removing the 4-byte length and any provided padding
   """
-  @spec decode(xdr :: xdr, max_len :: max) :: {:ok, string :: t} | decode_error
+  @spec decode(xdr :: xdr, max_len :: max) :: {:ok, {string :: t, rest :: Base.xdr}} | decode_error
   def decode(xdr, max_len \\ @max_len)
   def decode(xdr, max_len) do
     case VariableOpaque.decode(xdr, max_len) do

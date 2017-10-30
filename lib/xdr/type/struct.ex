@@ -1,19 +1,24 @@
 defmodule XDR.Type.Struct do
+  @moduledoc """
+  RFC 4506, Section 4.14 - Structure
+  """
+
   require OK
+  alias XDR.Type.Base
 
   defmacro __using__(spec: spec) do
     keys = Keyword.keys(spec)
 
     quote do
-      @behaviour XDR.Type.Base
-
       import XDR.Util.Macros
+
+      @behaviour XDR.Type.Base
 
       defstruct unquote(keys)
 
       @type t :: struct
       @type spec :: keyword(xdr_module :: module)
-      @type xdr :: <<_ :: 32>>
+      @type xdr :: Base.xdr
 
       def length, do: :struct
 
@@ -26,7 +31,7 @@ defmodule XDR.Type.Struct do
       @spec encode(val :: t) :: {:ok, xdr :: xdr} | {:error, reason :: :invalid}
       def encode(val), do: encode(val, unquote(spec))
 
-      @spec decode(xdr :: xdr) :: {:ok, val :: t} | {:error, reason :: :invalid}
+      @spec decode(xdr :: xdr) :: {:ok, {val :: t, rest :: Base.xdr}} | {:error, reason :: :invalid}
       def decode(xdr), do: decode(xdr, unquote(spec))
 
       #-----------------------------------------------------------------------#
