@@ -32,7 +32,7 @@ defmodule XDR.Type.Uint do
   @type t :: 0..4294967295
   @type xdr :: Base.xdr
 
-  @length 32
+  @length 4
 
   @doc false
   def length, do: @length
@@ -55,13 +55,13 @@ defmodule XDR.Type.Uint do
   @spec encode(uint :: t) :: {:ok, xdr :: xdr} | {:error, :invalid | :out_of_bounds}
   def encode(uint) when not is_integer(uint), do: {:error, :invalid}
   def encode(uint) when not is_valid_uint?(uint), do: {:error, :out_of_bounds}
-  def encode(uint), do: {:ok, <<uint :: big-unsigned-integer-size(@length)>>}
+  def encode(uint), do: {:ok, <<uint :: big-unsigned-integer-size(32)>>}
 
   @doc """
   Decodes a 4-byte binary into an unsigned integer
   """
   @spec decode(xdr :: xdr) :: {:ok, {uint :: t, rest :: Base.xdr}} | {:error, :invalid}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(<<uint :: big-unsigned-integer-size(@length), rest :: binary>>), do: {:ok, {uint, rest}}
+  def decode(<<uint :: big-unsigned-integer-size(32), rest :: binary>>), do: {:ok, {uint, rest}}
   def decode(_), do: {:error, :invalid}
 end

@@ -7,7 +7,7 @@ defmodule XDR.Type.IntTest do
   @max_int Math.pow(2, 31) - 1
 
   test "length" do
-    assert Int.length === 32
+    assert Int.length === 4
   end
 
   test "new" do

@@ -4,7 +4,7 @@ defmodule XDR.Type.BoolTest do
   alias XDR.Type.Int
 
   test "length" do
-    assert Bool.length === 32
+    assert Bool.length === 4
   end
 
   test "new" do

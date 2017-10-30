@@ -30,7 +30,7 @@ defmodule XDR.Type.EnumTest do
   alias XDR.Type.EnumTest.DummyEnum
 
   test "length" do
-    assert DummyEnum.length === 32
+    assert DummyEnum.length === 4
   end
 
   test "new" do

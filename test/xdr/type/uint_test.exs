@@ -7,7 +7,7 @@ defmodule XDR.Type.UintTest do
   @max_uint Math.pow(2, 32) - 1
 
   test "length" do
-    assert Uint.length === 32
+    assert Uint.length === 4
   end
 
   test "new" do

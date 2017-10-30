@@ -33,12 +33,10 @@ defmodule XDR.Type.FixedOpaque do
       raise "invalid length"
     end
 
-    bit_length = len * 8
-
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: unquote(bit_length)
+      def length, do: unquote(len)
       def new(opaque), do: unquote(__MODULE__).new(opaque, unquote(len))
       def valid?(opaque), do: unquote(__MODULE__).valid?(opaque, unquote(len))
       def encode(opaque), do: unquote(__MODULE__).encode(opaque, unquote(len))
@@ -78,7 +76,7 @@ defmodule XDR.Type.FixedOpaque do
   def decode(xdr, len) do
     padding_len = Util.required_padding(len)
 
-    <<opaque :: binary-size(len), padding :: binary-size(padding_len), rest :: binary>> = xdr
+    <<opaque :: bytes-size(len), padding :: bytes-size(padding_len), rest :: binary>> = xdr
     case padding do
       <<>> -> {:ok, {opaque, rest}}
       <<0>> -> {:ok, {opaque, rest}}

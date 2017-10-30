@@ -1,25 +1,23 @@
+defmodule XDR.Type.ConstTest.DummyConst do
+  use XDR.Type.Const, spec: [type: XDR.Type.Int, value: 3]
+end
+
 defmodule XDR.Type.ConstTest do
   use ExUnit.Case
-  alias XDR.Type.Const
-
-  defmodule XDR.Type.ConstTest.DummyConst do
-    # TODO: why does this require the full module name?
-    use Const, spec: [type: XDR.Type.Int, value: 3]
-  end
+  alias XDR.Type.ConstTest.DummyConst
 
   defmodule XDR.Type.ConstTest.InvalidSpec do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "invalid Const spec: 2 is not a valid Elixir.XDR.Type.String", fn ->
+    assert_compile_time_raise RuntimeError, "invalid Const module spec: 2 is not a valid Elixir.XDR.Type.String", fn ->
       # TODO: why can't I use Const here?
       use XDR.Type.Const, spec: [type: XDR.Type.String, value: 2]
     end
   end
 
-  alias XDR.Type.ConstTest.DummyConst
 
   test "length" do
-    assert DummyConst.length === 32
+    assert DummyConst.length === 4
   end
 
   test "new" do

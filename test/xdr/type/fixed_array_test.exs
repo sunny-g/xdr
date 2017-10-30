@@ -25,8 +25,8 @@ defmodule XDR.Type.FixedArrayTest do
 
   test "length" do
     assert Len0.length === 0
-    assert Len1.length === 32
-    assert Len2.length === 64
+    assert Len1.length === 4
+    assert Len2.length === 8
   end
 
   test "new" do

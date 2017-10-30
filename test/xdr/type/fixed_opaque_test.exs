@@ -29,10 +29,10 @@ defmodule XDR.Type.FixedOpaqueTest do
   alias XDR.Type.FixedOpaqueTest.{Len1, Len2, Len3, Len5}
 
   test "length" do
-    assert Len1.length === 8
-    assert Len2.length === 16
-    assert Len3.length === 24
-    assert Len5.length === 40
+    assert Len1.length === 1
+    assert Len2.length === 2
+    assert Len3.length === 3
+    assert Len5.length === 5
   end
 
   test "new" do

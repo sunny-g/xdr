@@ -20,7 +20,7 @@ defmodule XDR.Type.FixedArray do
     end
 
     type_module = Macro.expand(type, __ENV__)
-    bit_length = case type_module.length do
+    byte_length = case type_module.length do
       type_len when is_integer(type_len) -> type_len * len
       _ -> :variable
     end
@@ -28,7 +28,7 @@ defmodule XDR.Type.FixedArray do
     quote do
       @behaviour XDR.Type.Base
 
-      def length, do: unquote(bit_length)
+      def length, do: unquote(byte_length)
       def new(array), do: unquote(__MODULE__).new(array, unquote(type), unquote(len))
       def valid?(array), do: unquote(__MODULE__).valid?(array, unquote(type), unquote(len))
       def encode(array), do: unquote(__MODULE__).encode(array, unquote(type), unquote(len))
@@ -100,7 +100,7 @@ defmodule XDR.Type.FixedArray do
   defp decode_fixed_type(xdr, _, 0, array), do: {array, xdr}
   defp decode_fixed_type(xdr, type, array_length, array) do
     elem_length = type.length
-    <<elem :: bits-size(elem_length), rest :: binary>> = xdr
+    <<elem :: bytes-size(elem_length), rest :: binary>> = xdr
 
     case type.decode(elem) do
       {:ok, {val, _}} -> decode_fixed_type(rest, type, array_length - 1, [val | array])
@@ -111,8 +111,8 @@ defmodule XDR.Type.FixedArray do
   # decodes an XDR of variable type elements
   defp decode_variable_type(xdr, _, 0, array), do: {array, xdr}
   defp decode_variable_type(xdr, type, array_length, array) do
-    <<elem_length :: big-unsigned-integer-size(32), rest :: binary>> = xdr
-    <<elem :: bits-size(elem_length), _padding :: binary>> = rest
+    <<elem_length :: unsigned-integer, rest :: binary>> = xdr
+    <<elem :: bytes-size(elem_length), _padding :: binary>> = rest
 
     case type.decode(elem) do
       {:ok, {val, _}} -> decode_variable_type(rest, type, array_length - 1, [val | array])

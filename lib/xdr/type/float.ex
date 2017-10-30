@@ -25,7 +25,7 @@ defmodule XDR.Type.Float do
   @type t :: number
   @type xdr :: Base.xdr
 
-  @length 32
+  @length 4
 
   @doc false
   def length, do: @length
@@ -47,13 +47,13 @@ defmodule XDR.Type.Float do
   """
   @spec encode(float :: t) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(float) when not is_valid_float?(float), do: {:error, :invalid}
-  def encode(float), do: {:ok, <<float :: big-signed-float-size(@length)>>}
+  def encode(float), do: {:ok, <<float :: big-signed-float-size(32)>>}
 
   @doc """
   Decodes a 4-byte binary into an single-precision float
   """
   @spec decode(xdr :: xdr) :: {:ok, {float :: t, rest :: Base.xdr}} | {:error, :invalid | :out_of_bounds}
   def decode(xdr) when not is_valid_xdr?(xdr), do: {:error, :invalid}
-  def decode(<<float :: big-signed-float-size(@length), rest :: binary>>), do: {:ok, {float, rest}}
+  def decode(<<float :: big-signed-float-size(32), rest :: binary>>), do: {:ok, {float, rest}}
   def decode(_), do: {:error, :invalid}
 end

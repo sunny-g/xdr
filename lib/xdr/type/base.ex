@@ -8,7 +8,7 @@ defmodule XDR.Type.Base do
   @type error :: atom | String.t
 
   @doc """
-  Returns the expected length (in bits) of an XDR-encoded binary of this type (sans padding)
+  Returns the expected length (in bytes) of an XDR-encoded binary of this type (sans padding)
   """
   @callback length :: non_neg_integer | :struct | :union | :variable
 

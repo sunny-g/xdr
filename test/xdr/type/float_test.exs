@@ -3,7 +3,7 @@ defmodule XDR.Type.FloatTest do
   alias XDR.Type.Float
 
   test "length" do
-    assert Float.length === 32
+    assert Float.length === 4
   end
 
   test "new" do

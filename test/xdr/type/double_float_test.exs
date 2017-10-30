@@ -3,7 +3,7 @@ defmodule XDR.Type.DoubleFloatTest do
   alias XDR.Type.DoubleFloat
 
   test "length" do
-    assert DoubleFloat.length === 64
+    assert DoubleFloat.length === 8
   end
 
   test "new" do

@@ -7,7 +7,7 @@ defmodule XDR.Type.HyperUintTest do
   @max_hyper_uint Math.pow(2, 64) - 1
 
   test "length" do
-    assert HyperUint.length === 64
+    assert HyperUint.length === 8
   end
 
   test "new" do
