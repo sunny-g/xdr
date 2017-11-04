@@ -1,41 +1,64 @@
 defmodule XDR.Mixfile do
   use Mix.Project
 
+  @name    :xdr
+  @version "0.1.0"
+
+  @deps [
+    {:math, "~> 0.3.0"},
+    {:ok,   "~> 1.9"},
+  ]
+
+  @dev_deps [
+    {:credo,          "~> 0.8", only: [:dev, :test], runtime: false},
+    {:ex_doc,         ">0.0.0", only: [:dev, :test], runtime: false},
+    {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
+  ]
+
+  @maintainers ["Sunny G"]
+  @github      "https://github.com/sunny-g/xdr"
+
+  @description """
+  XDR encoded data structures [RFC 4506](https://tools.ietf.org/html/rfc4506) in Elixir
+  """
+
+  # ------------------------------------------------------------
+
   def project do
-    [ app: :xdr,
-      version: "0.0.1",
-      elixir: "~> 1.4",
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
-      deps: deps() ++ dev_deps()
+    in_production = Mix.env == :prod
+
+    [ app:              @name,
+      version:          @version,
+      elixir:           "~> 1.4",
+      deps:             @deps ++ @dev_deps,
+      build_embedded:   in_production,
+      start_permanent:  in_production,
+      description:      @description,
+      docs: [
+        main:           "readme",
+        source_url:     @github,
+        extras:         ["README.md"],
+      ],
+      package:          package(),
     ]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
-    # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger]]
-  end
-
-  # Dependencies can be Hex packages:
-  #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
-  defp deps do
-    [ {:math, "~> 0.3.0"},
-      {:ok, "~> 1.9"},
+      # built-in apps that need starting
+    [ extra_applications: [
+        :logger,
+      ],
     ]
-  end
+    end
 
-  defp dev_deps do
-    [ {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
+  defp package do
+    [ name:        @name,
+      files:       ["lib", "mix.exs", "README.md"],
+      maintainers: @maintainers,
+      licenses:    ["MIT"],
+      links:       %{
+        "GitHub" => @github,
+      },
     ]
   end
 end
