@@ -1,6 +1,6 @@
 defmodule XDR.Type.QuadrupleFloat do
   @moduledoc """
-  RFC 4506, Section 4.8 - Quadruple-precision Floating Point
+  RFC 4506, Section 4.8 - Quadruple-precision Floating Point (not implemented)
   """
 
   alias XDR.Type.Base

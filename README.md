@@ -55,7 +55,7 @@ XDR.Type.Optional
 
 | Version | Change Summary |
 | ------- | -------------- |
-| [v0.1.0](https://hex.pm/packages/0.1.0) | initial release |
+| [v0.1.0](https://hex.pm/packages/xdr/0.1.0) | initial release |
 
 ## Contributing
 
