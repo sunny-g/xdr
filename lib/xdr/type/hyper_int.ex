@@ -29,8 +29,8 @@ defmodule XDR.Type.HyperInt do
   @typedoc """
   Hyper integer between -2^63 to 2^63 - 1
   """
-  @type t :: -9223372036854775808..9223372036854775807
-  @type xdr :: <<_ :: _*64>>
+  @type t :: -9_223_372_036_854_775_808..9_223_372_036_854_775_807
+  @type xdr :: <<_ :: _ * 64>>
 
   @length 8
 

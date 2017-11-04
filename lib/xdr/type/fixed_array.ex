@@ -81,7 +81,9 @@ defmodule XDR.Type.FixedArray do
   # encodes each array element into a binary
   defp array_to_xdr(array, type) do
     Enum.reduce(array, <<>>, fn(elem, xdr) ->
-      encoded_elem = type.encode(elem) |> elem(1)
+      encoded_elem = elem
+        |> type.encode()
+        |> elem(1)
       xdr <> encoded_elem
     end)
   end

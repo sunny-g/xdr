@@ -23,7 +23,7 @@ defmodule XDR.Type.DoubleFloat do
   Double-precision float
   """
   @type t :: number
-  @type xdr :: <<_ :: _*64>>
+  @type xdr :: <<_ :: _ * 64>>
 
   @length 8
 

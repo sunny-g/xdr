@@ -4,7 +4,7 @@ defmodule XDR.Type.Base do
   """
 
   @type t :: any
-  @type xdr :: <<_ :: _*32>>
+  @type xdr :: <<_ :: _ * 32>>
   @type error :: atom | String.t
 
   @doc """

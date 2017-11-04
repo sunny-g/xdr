@@ -1,4 +1,8 @@
 defmodule XDR.Util.Macros do
+  @moduledoc """
+  XDR Macros (to be used in guard clauses)
+  """
+
   defmacro is_valid_xdr?(binary) do
     quote do
       is_binary(unquote(binary)) and calculate_padding(byte_size(unquote(binary))) === 0
@@ -15,6 +19,8 @@ defmodule XDR.Util.Macros do
 end
 
 defmodule XDR.Util do
+  @moduledoc false
+
   require XDR.Util.Macros
 
   def required_padding(0), do: 0

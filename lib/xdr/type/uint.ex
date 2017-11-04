@@ -29,7 +29,7 @@ defmodule XDR.Type.Uint do
   @typedoc """
   Integer between 0 and 2^32 - 1
   """
-  @type t :: 0..4294967295
+  @type t :: 0..4_294_967_295
   @type xdr :: Base.xdr
 
   @length 4

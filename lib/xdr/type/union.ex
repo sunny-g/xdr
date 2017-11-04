@@ -91,15 +91,15 @@ defmodule XDR.Type.Union do
     switch_module = get_switch(spec)
     attribute_module = get_attribute(discriminant, spec)
 
-    unless valid?({discriminant, val}, spec) do
-      {:error, :invalid}
-    else
+    if valid?({discriminant, val}, spec) do
       OK.with do
         switch <- switch_module.encode(discriminant)
         arm <- attribute_module.encode(val)
 
         {:ok, switch <> arm}
       end
+    else
+      {:error, :invalid}
     end
   end
   def encode(discriminant, spec) do
@@ -116,9 +116,7 @@ defmodule XDR.Type.Union do
       true -> nil
     end
 
-    unless valid?(discriminant, spec) and not is_nil(case_module) do
-      {:error, :invalid}
-    else
+    if valid?(discriminant, spec) and not is_nil(case_module) do
       OK.with do
         switch <- switch_module.encode(discriminant)
         arm <- case_module.new()
@@ -126,6 +124,8 @@ defmodule XDR.Type.Union do
 
         {:ok, switch <> arm}
       end
+    else
+      {:error, :invalid}
     end
   end
 
@@ -181,11 +181,13 @@ defmodule XDR.Type.Union do
 
   # Retrieves the case module based on the discriminant, or nil
   defp get_case(discriminant, spec) when is_atom(discriminant) do
-    get_cases(spec)
+    spec
+      |> get_cases()
       |> Keyword.get(discriminant)
   end
   defp get_case(discriminant, spec) do
-    get_cases(spec)
+    spec
+      |> get_cases()
       |> Elixir.Enum.find({nil, nil}, &Kernel.===(elem(&1, 0), discriminant))
       |> elem(1)
   end
@@ -193,7 +195,8 @@ defmodule XDR.Type.Union do
   # Retrieves the attribute module for a givem discriminant, or nil
   defp get_attribute(discriminant, spec) do
     attr = get_case(discriminant, spec)
-    get_attributes(spec)
+    spec
+      |> get_attributes()
       |> Keyword.get(attr)
   end
 

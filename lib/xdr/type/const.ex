@@ -5,7 +5,9 @@ defmodule XDR.Type.Const do
 
   defmacro __using__(spec: spec) do
     const = Keyword.get(spec, :value)
-    module = Keyword.get(spec, :type) |> Macro.expand(__ENV__)
+    module = spec
+      |> Keyword.get(:type)
+      |> Macro.expand(__ENV__)
     module_name = Atom.to_string(module)
 
     if not module.valid?(const) do

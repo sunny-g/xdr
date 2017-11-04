@@ -11,7 +11,7 @@ defmodule XDR.Type.Void do
   Void type
   """
   @type t :: nil
-  @type xdr :: <<_ :: _*32>>
+  @type xdr :: <<_ :: _ * 32>>
 
   @doc false
   def length, do: 0

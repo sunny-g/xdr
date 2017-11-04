@@ -52,7 +52,9 @@ defmodule XDR.Type.Enum do
   @spec valid?(name :: t, enum :: spec) :: boolean
   def valid?(name, _) when not is_atom(name), do: false
   def valid?(_, enum) when not is_list(enum), do: false
-  def valid?(name, enum), do: Keyword.has_key?(enum, name) and Keyword.get(enum, name) |> Uint.valid?
+  def valid?(name, enum), do: Keyword.has_key?(enum, name) and enum
+    |> Keyword.get(name)
+    |> Uint.valid?
 
   @doc """
   Encodes an atom name and enum spec into the name's enum spec 4-byte binary
@@ -61,10 +63,12 @@ defmodule XDR.Type.Enum do
   def encode(name, _) when not is_atom(name), do: {:error, :invalid_name}
   def encode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
   def encode(name, enum) do
-    unless valid?(name, enum) do
-      {:error, :invalid}
+    if valid?(name, enum) do
+      enum
+        |> Keyword.get(name)
+        |> Uint.encode
     else
-      Keyword.get(enum, name) |> Uint.encode
+      {:error, :invalid}
     end
   end
 

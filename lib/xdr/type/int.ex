@@ -29,7 +29,7 @@ defmodule XDR.Type.Int do
   @typedoc """
   Integer between -2^31 to 2^31 - 1
   """
-  @type t :: -2147483648..2147483647
+  @type t :: -2_147_483_648..2_147_483_647
   @type xdr :: Base.xdr
 
   @length 4

@@ -29,8 +29,8 @@ defmodule XDR.Type.HyperUint do
   @typedoc """
   Hyper unsigned integer between 0 and 2^64 - 1
   """
-  @type t :: 0..18446744073709551615
-  @type xdr :: <<_ :: _*64>>
+  @type t :: 0..18_446_744_073_709_551_615
+  @type xdr :: <<_ :: _ * 64>>
 
   @length 8
 

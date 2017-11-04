@@ -72,15 +72,15 @@ defmodule XDR.Type.VariableArray do
   @spec encode(array :: t, type :: module, max :: max) :: {:ok, xdr :: xdr} | {:error, :invalid}
   def encode(array, type, max \\ @max_len)
   def encode(array, type, max) do
-    unless valid?(array, type, max) do
-      {:error, :invalid}
-    else
+    if valid?(array, type, max) do
       OK.with do
         len = length(array)
         encoded <- FixedArray.encode(array, type, len)
         encoded_len <- Uint.encode(len)
         {:ok, encoded_len <> encoded}
       end
+    else
+      {:error, :invalid}
     end
   end
 

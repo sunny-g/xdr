@@ -87,7 +87,9 @@ defmodule XDR.Type.String do
       {:error, reason} ->
         {:error, reason}
       {:ok, {binary, rest}} ->
-        result = String.graphemes(binary) |> Enum.join("")
+        result = binary
+          |> String.graphemes()
+          |> Enum.join("")
         {:ok, {result, rest}}
     end
   end

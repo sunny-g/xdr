@@ -70,12 +70,16 @@ defmodule XDR.Type.Struct do
   # HELPERS
   #---------------------------------------------------------------------------#
 
-  def valid?(struct, {key, module}), do: Map.get(struct, key) |> module.valid?
+  def valid?(struct, {key, module}), do: struct
+    |> Map.get(key)
+    |> module.valid?
 
   def encode(_struct, {_, _}, {:error, reason}), do: {:error, reason}
   def encode(struct, {key, module}, {:ok, curr_xdr}) do
     OK.with do
-      xdr <- Map.get(struct, key) |> module.encode
+      xdr <- struct
+        |> Map.get(key)
+        |> module.encode
       {:ok, curr_xdr <> xdr}
     end
   end
