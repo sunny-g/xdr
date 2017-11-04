@@ -1,6 +1,6 @@
 # XDR
 
-XDR encoded data structures [RFC 4506](https://tools.ietf.org/html/rfc4506) in Elixir
+XDR encoded data structures ([RFC 4506](https://tools.ietf.org/html/rfc4506)) in Elixir
 
 [Source](https://github.com/sunny-g/xdr) | [Documentation](https://hexdocs.pm/xdr)
 
@@ -8,8 +8,9 @@ XDR encoded data structures [RFC 4506](https://tools.ietf.org/html/rfc4506) in E
 
 XDR provides:
 
-- base modules for defining your own custom type modules
-- built in validation, encoder and decoder functions for each module
+- base XDR type modules
+- compound XDR type modules for defining your own custom types
+- built-in validation, encoding and decoding functions for each base and compound/custom module
 
 ## Installation
 
