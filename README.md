@@ -6,7 +6,8 @@ XDR encoded data structures [RFC 4506](https://tools.ietf.org/html/rfc4506) in E
 
 [![Build Status](https://semaphoreci.com/api/v1/sunny-g/xdr/branches/master/badge.svg)](https://semaphoreci.com/sunny-g/xdr)
 
-`XDR`:
+XDR provides:
+
 - base modules for defining your own custom type modules
 - built in validation, encoder and decoder functions for each module
 
@@ -54,7 +55,7 @@ XDR.Type.Optional
 
 | Version | Change Summary |
 | ------- | -------------- |
-| [v0.1.0](https://github.com/your_username/<%= @project_name %>/releases/tag/0.0.1) | initial release |
+| [v0.1.0](https://hex.pm/packages/0.1.0) | initial release |
 
 ## Contributing
 
