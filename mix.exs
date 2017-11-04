@@ -19,7 +19,7 @@ defmodule XDR.Mixfile do
   @github      "https://github.com/sunny-g/xdr"
 
   @description """
-  XDR encoded data structures [RFC 4506](https://tools.ietf.org/html/rfc4506) in Elixir
+  XDR encoded data structures RFC 4506 in Elixir
   """
 
   # ------------------------------------------------------------
