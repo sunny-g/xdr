@@ -32,5 +32,5 @@ defmodule XDR.Type.Base do
   """
   @callback decode(xdr :: xdr) :: {:ok, {native :: t, rest :: xdr}} | {:error, reason :: error}
 
-  @optional_callbacks [length: 1, new: 0]
+  @optional_callbacks [length: 0, new: 1]
 end
