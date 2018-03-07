@@ -18,7 +18,7 @@ Install from [Hex.pm](https://hex.pm/packages/xdr):
 
 ```elixir
 def deps do
-  [{:xdr, "~> 0.1.0"}]
+  [{:xdr, "~> 0.1.1"}]
 end
 ```
 
@@ -56,6 +56,7 @@ XDR.Type.Optional
 
 | Version | Change Summary |
 | ------- | -------------- |
+| [v0.1.1](https://hex.pm/packages/xdr/0.1.1) | [minor bugfix](https://github.com/sunny-g/xdr/pull/6) |
 | [v0.1.0](https://hex.pm/packages/xdr/0.1.0) | initial release |
 
 ## Contributing
