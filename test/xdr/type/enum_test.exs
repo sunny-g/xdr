@@ -4,33 +4,43 @@ defmodule XDR.Type.EnumTest do
   alias XDR.Type.Int
 
   defmodule XDR.Type.EnumTest.DummyEnum do
-    use Enum, spec: [
-      red: 0,
-      green: 1,
-      evenMoreGreen: 3,
-    ]
+    use Enum,
+      spec: [
+        red: 0,
+        green: 1,
+        evenMoreGreen: 3
+      ]
+  end
+
+  defmodule XDR.Type.EnumTest.NegativeEnum do
+    use Enum,
+      spec: [
+        zero: 0,
+        one: -1,
+        two: -2
+      ]
   end
 
   defmodule XDR.Type.EnumTest.InvalidSpec do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "Enum spec must be a keyword list", fn ->
+    assert_compile_time_raise(RuntimeError, "Enum spec must be a keyword list", fn ->
       use XDR.Type.Enum, spec: %{}
-    end
+    end)
   end
 
   defmodule XDR.Type.EnumTest.ExceedMax do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "all Enum values must be numbers", fn ->
+    assert_compile_time_raise(RuntimeError, "all Enum values must be numbers", fn ->
       use XDR.Type.Enum, spec: [a: "a"]
-    end
+    end)
   end
 
-  alias XDR.Type.EnumTest.DummyEnum
+  alias XDR.Type.EnumTest.{DummyEnum, NegativeEnum}
 
   test "length" do
-    assert DummyEnum.length === 4
+    assert DummyEnum.length() === 4
   end
 
   test "new" do
@@ -75,5 +85,17 @@ defmodule XDR.Type.EnumTest do
 
     assert DummyEnum.decode(<<0, 0, 0, 2>>) == {:error, :invalid_enum}
     assert DummyEnum.decode(<<0, 0, 1>>) == {:error, :invalid_xdr}
+  end
+
+  test "negative encode" do
+    assert NegativeEnum.encode(:zero) == Int.encode(0)
+    assert NegativeEnum.encode(:one) == Int.encode(-1)
+    assert NegativeEnum.encode(:two) == Int.encode(-2)
+  end
+
+  test "negative decode" do
+    assert NegativeEnum.decode(<<0, 0, 0, 0>>) == {:ok, {:zero, <<>>}}
+    assert NegativeEnum.decode(<<255, 255, 255, 255>>) == {:ok, {:one, <<>>}}
+    assert NegativeEnum.decode(<<255, 255, 255, 254>>) == {:ok, {:two, <<>>}}
   end
 end
