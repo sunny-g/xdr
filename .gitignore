@@ -21,3 +21,6 @@ erl_crash.dump
 
 # misc
 .DS_Store
+
+# Language Server
+.elixir_ls
