@@ -24,17 +24,17 @@ defmodule XDR.Type.EnumTest do
   defmodule XDR.Type.EnumTest.InvalidSpec do
     import CompileTimeAssertions
 
-    assert_compile_time_raise(RuntimeError, "Enum spec must be a keyword list", fn ->
+    assert_compile_time_raise RuntimeError, "Enum spec must be a keyword list", fn ->
       use XDR.Type.Enum, spec: %{}
-    end)
+    end
   end
 
   defmodule XDR.Type.EnumTest.ExceedMax do
     import CompileTimeAssertions
 
-    assert_compile_time_raise(RuntimeError, "all Enum values must be numbers", fn ->
+    assert_compile_time_raise RuntimeError, "all Enum values must be numbers", fn ->
       use XDR.Type.Enum, spec: [a: "a"]
-    end)
+    end
   end
 
   alias XDR.Type.EnumTest.{DummyEnum, NegativeEnum}
@@ -73,6 +73,9 @@ defmodule XDR.Type.EnumTest do
     assert DummyEnum.encode(:red) == Int.encode(0)
     assert DummyEnum.encode(:green) == Int.encode(1)
     assert DummyEnum.encode(:evenMoreGreen) == Int.encode(3)
+    assert NegativeEnum.encode(:zero) == Int.encode(0)
+    assert NegativeEnum.encode(:one) == Int.encode(-1)
+    assert NegativeEnum.encode(:two) == Int.encode(-2)
 
     assert DummyEnum.encode(:blue) == {:error, :invalid}
   end
@@ -82,20 +85,11 @@ defmodule XDR.Type.EnumTest do
     assert DummyEnum.decode(<<0, 0, 0, 1>>) == {:ok, {:green, <<>>}}
     assert DummyEnum.decode(<<0, 0, 0, 3>>) == {:ok, {:evenMoreGreen, <<>>}}
     assert DummyEnum.decode(<<0, 0, 0, 3, 0, 0, 0, 0>>) == {:ok, {:evenMoreGreen, <<0, 0, 0, 0>>}}
-
-    assert DummyEnum.decode(<<0, 0, 0, 2>>) == {:error, :invalid_enum}
-    assert DummyEnum.decode(<<0, 0, 1>>) == {:error, :invalid_xdr}
-  end
-
-  test "negative encode" do
-    assert NegativeEnum.encode(:zero) == Int.encode(0)
-    assert NegativeEnum.encode(:one) == Int.encode(-1)
-    assert NegativeEnum.encode(:two) == Int.encode(-2)
-  end
-
-  test "negative decode" do
     assert NegativeEnum.decode(<<0, 0, 0, 0>>) == {:ok, {:zero, <<>>}}
     assert NegativeEnum.decode(<<255, 255, 255, 255>>) == {:ok, {:one, <<>>}}
     assert NegativeEnum.decode(<<255, 255, 255, 254>>) == {:ok, {:two, <<>>}}
+
+    assert DummyEnum.decode(<<0, 0, 0, 2>>) == {:error, :invalid_enum}
+    assert DummyEnum.decode(<<0, 0, 1>>) == {:error, :invalid_xdr}
   end
 end
