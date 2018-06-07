@@ -2,7 +2,7 @@ defmodule XDR.Mixfile do
   use Mix.Project
 
   @name    :xdr
-  @version "0.1.1"
+  @version "0.1.2"
 
   @deps [
     {:math, "~> 0.3.0"},
