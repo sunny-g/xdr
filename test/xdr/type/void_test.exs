@@ -1,13 +1,15 @@
 defmodule XDR.Type.VoidTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.Void
 
   test "length" do
-    assert Void.length === 0
+    assert Void.length() === 0
   end
 
   test "new" do
-    assert Void.new == {:ok, nil}
+    assert Void.new() == {:ok, nil}
     assert Void.new(nil) == {:ok, nil}
 
     assert Void.new(0) == {:error, :invalid}

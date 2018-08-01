@@ -3,11 +3,13 @@ defmodule XDR.Type.OptionalTest.OptionalInt do
 end
 
 defmodule XDR.Type.OptionalTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.OptionalTest.OptionalInt
 
   test "length" do
-    assert OptionalInt.length === :variable
+    assert OptionalInt.length() === :variable
   end
 
   test "new" do

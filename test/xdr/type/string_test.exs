@@ -1,5 +1,7 @@
 defmodule XDR.Type.StringTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   require Math
   alias XDR.Type.String
 
@@ -22,22 +24,22 @@ defmodule XDR.Type.StringTest do
   defmodule XDR.Type.StringTest.ExceedMax do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "max length too large", fn ->
+    assert_compile_time_raise(RuntimeError, "max length too large", fn ->
       use XDR.Type.String, max_len: Math.pow(2, 32)
-    end
+    end)
   end
 
   alias XDR.Type.StringTest.{Len1, Len2, Len3, Len4}
 
   test "length" do
-    assert Len1.length === :variable
-    assert Len2.length === :variable
-    assert Len3.length === :variable
-    assert Len4.length === :variable
+    assert Len1.length() === :variable
+    assert Len2.length() === :variable
+    assert Len3.length() === :variable
+    assert Len4.length() === :variable
   end
 
   test "new" do
-    assert Len1.new === {:ok, ""}
+    assert Len1.new() === {:ok, ""}
     assert Len1.new("") === {:ok, ""}
     assert Len1.new("a") === {:ok, "a"}
     assert Len2.new("a") === {:ok, "a"}
@@ -85,7 +87,10 @@ defmodule XDR.Type.StringTest do
     assert Len4.decode(<<0, 0, 0, 2, 65, 65, 0, 0>>) == {:ok, {"AA", <<>>}}
 
     assert Len4.decode(<<0, 0, 0, 1, 65, 1, 0>>) == {:error, :invalid}
-    assert Len4.decode(<<255, 255, 255, 255, 0, 0, 0, 0>>) == {:error, :xdr_length_exceeds_defined_max}
+
+    assert Len4.decode(<<255, 255, 255, 255, 0, 0, 0, 0>>) ==
+             {:error, :xdr_length_exceeds_defined_max}
+
     assert Len4.decode(<<0, 0, 0, 1, 65, 1, 0, 0>>) == {:error, :invalid_padding}
     assert Len4.decode(<<0, 0, 0, 1, 65, 0, 1, 0>>) == {:error, :invalid_padding}
     assert Len4.decode(<<0, 0, 0, 1, 65, 0, 0, 1>>) == {:error, :invalid_padding}

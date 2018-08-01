@@ -1,5 +1,7 @@
 defmodule XDR.Type.IntTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   require Math
   alias XDR.Type.Int
 
@@ -7,11 +9,11 @@ defmodule XDR.Type.IntTest do
   @max_int Math.pow(2, 31) - 1
 
   test "length" do
-    assert Int.length === 4
+    assert Int.length() === 4
   end
 
   test "new" do
-    assert Int.new === {:ok, 0}
+    assert Int.new() === {:ok, 0}
     assert Int.new(0) === {:ok, 0}
     assert Int.new(1) === {:ok, 1}
     assert Int.new(@min_int) === {:ok, @min_int}

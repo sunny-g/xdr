@@ -2,11 +2,11 @@ defmodule XDR.Mixfile do
   use Mix.Project
 
   @name    :xdr
-  @version "0.1.2"
+  @version "0.2.0"
 
   @deps [
     {:math, "~> 0.3.0"},
-    {:ok,   "~> 1.9"},
+    {:ok,   github: "sunny-g/ok"},
   ]
 
   @dev_deps [
@@ -29,7 +29,7 @@ defmodule XDR.Mixfile do
 
     [ app:              @name,
       version:          @version,
-      elixir:           "~> 1.4",
+      elixir:           "~> 1.6",
       deps:             @deps ++ @dev_deps,
       build_embedded:   in_production,
       start_permanent:  in_production,
@@ -49,7 +49,7 @@ defmodule XDR.Mixfile do
         :logger,
       ],
     ]
-    end
+  end
 
   defp package do
     [ name:        @name,

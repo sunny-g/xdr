@@ -1,40 +1,38 @@
 defmodule XDR.Type.EnumTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.Enum
   alias XDR.Type.Int
 
   defmodule XDR.Type.EnumTest.DummyEnum do
     use Enum,
-      spec: [
-        red: 0,
-        green: 1,
-        evenMoreGreen: 3
-      ]
+      red: 0,
+      green: 1,
+      evenMoreGreen: 3
   end
 
   defmodule XDR.Type.EnumTest.NegativeEnum do
     use Enum,
-      spec: [
-        zero: 0,
-        one: -1,
-        two: -2
-      ]
+      zero: 0,
+      one: -1,
+      two: -2
   end
 
   defmodule XDR.Type.EnumTest.InvalidSpec do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "Enum spec must be a keyword list", fn ->
-      use XDR.Type.Enum, spec: %{}
-    end
+    assert_compile_time_raise(RuntimeError, "Enum spec must be a keyword list", fn ->
+      use XDR.Type.Enum, %{}
+    end)
   end
 
   defmodule XDR.Type.EnumTest.ExceedMax do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "all Enum values must be numbers", fn ->
-      use XDR.Type.Enum, spec: [a: "a"]
-    end
+    assert_compile_time_raise(RuntimeError, "all Enum values must be numbers", fn ->
+      use XDR.Type.Enum, a: "a"
+    end)
   end
 
   alias XDR.Type.EnumTest.{DummyEnum, NegativeEnum}

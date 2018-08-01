@@ -18,7 +18,7 @@ Install from [Hex.pm](https://hex.pm/packages/xdr):
 
 ```elixir
 def deps do
-  [{:xdr, "~> 0.1.2"}]
+  [{:xdr, "~> 0.2.0"}]
 end
 ```
 
@@ -56,7 +56,8 @@ XDR.Type.Optional
 
 | Version | Change Summary |
 | ------- | -------------- |
-| [v0.1.2](https://hex.pm/packages/xdr/0.1.2) | [negative integers in Enums](https://github.com/sunny-g/xdr/pull/11)
+| [v0.2.0](https://hex.pm/packages/xdr/0.2.0) | [unify `__using__` API, upgrade to Elixir 1.6](https://github.com/sunny-g/xdr/pull/14) |
+| [v0.1.2](https://hex.pm/packages/xdr/0.1.2) | [negative integers in Enums](https://github.com/sunny-g/xdr/pull/11) |
 | [v0.1.1](https://hex.pm/packages/xdr/0.1.1) | [minor bugfix](https://github.com/sunny-g/xdr/pull/6) |
 | [v0.1.0](https://hex.pm/packages/xdr/0.1.0) | initial release |
 

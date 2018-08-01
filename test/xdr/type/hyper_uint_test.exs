@@ -1,5 +1,7 @@
 defmodule XDR.Type.HyperUintTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   require Math
   alias XDR.Type.HyperUint
 
@@ -7,11 +9,11 @@ defmodule XDR.Type.HyperUintTest do
   @max_hyper_uint Math.pow(2, 64) - 1
 
   test "length" do
-    assert HyperUint.length === 8
+    assert HyperUint.length() === 8
   end
 
   test "new" do
-    assert HyperUint.new === {:ok, 0}
+    assert HyperUint.new() === {:ok, 0}
     assert HyperUint.new(@min_hyper_uint) === {:ok, @min_hyper_uint}
     assert HyperUint.new(@max_hyper_uint) === {:ok, @max_hyper_uint}
 
@@ -51,13 +53,14 @@ defmodule XDR.Type.HyperUintTest do
     assert HyperUint.encode(0.1) == {:error, :invalid}
     assert HyperUint.encode(@min_hyper_uint - 1) == {:error, :out_of_bounds}
     assert HyperUint.encode(@max_hyper_uint + 1) == {:error, :out_of_bounds}
-
   end
 
   test "decode" do
     assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 1>>) == {:ok, {1, <<>>}}
     assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {1, <<0, 0, 0, 0>>}}
     assert HyperUint.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {@min_hyper_uint, <<>>}}
-    assert HyperUint.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, {@max_hyper_uint, <<>>}}
+
+    assert HyperUint.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) ==
+             {:ok, {@max_hyper_uint, <<>>}}
   end
 end

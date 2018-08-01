@@ -1,27 +1,32 @@
 defmodule XDR.Type.ConstTest.DummyConst do
-  use XDR.Type.Const, spec: [type: XDR.Type.Int, value: 3]
+  use XDR.Type.Const, type: XDR.Type.Int, value: 3
 end
 
 defmodule XDR.Type.ConstTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.ConstTest.DummyConst
 
   defmodule XDR.Type.ConstTest.InvalidSpec do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "invalid Const module spec: 2 is not a valid Elixir.XDR.Type.String", fn ->
-      # TODO: why can't I use Const here?
-      use XDR.Type.Const, spec: [type: XDR.Type.String, value: 2]
-    end
+    assert_compile_time_raise(
+      RuntimeError,
+      "invalid Const module spec: 2 is not a valid Elixir.XDR.Type.String",
+      fn ->
+        # TODO: why can't I use Const here?
+        use XDR.Type.Const, type: XDR.Type.String, value: 2
+      end
+    )
   end
 
-
   test "length" do
-    assert DummyConst.length === 4
+    assert DummyConst.length() === 4
   end
 
   test "new" do
-    assert DummyConst.new == {:ok, 3}
+    assert DummyConst.new() == {:ok, 3}
     assert DummyConst.new(3) == {:ok, 3}
 
     assert DummyConst.new(4) == {:error, :invalid}

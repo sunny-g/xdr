@@ -1,5 +1,7 @@
 defmodule XDR.Type.HyperIntTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   require Math
   alias XDR.Type.HyperInt
 
@@ -7,11 +9,11 @@ defmodule XDR.Type.HyperIntTest do
   @max_hyper_int Math.pow(2, 63) - 1
 
   test "length" do
-    assert HyperInt.length === 8
+    assert HyperInt.length() === 8
   end
 
   test "new" do
-    assert HyperInt.new === {:ok, 0}
+    assert HyperInt.new() === {:ok, 0}
     assert HyperInt.new(0) === {:ok, 0}
     assert HyperInt.new(1) === {:ok, 1}
     assert HyperInt.new(@min_hyper_int) === {:ok, @min_hyper_int}
@@ -66,7 +68,9 @@ defmodule XDR.Type.HyperIntTest do
     assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0>>) == {:ok, {1, <<0, 0, 0, 0>>}}
     assert HyperInt.decode(<<255, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, {-1, <<>>}}
     assert HyperInt.decode(<<128, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {@min_hyper_int, <<>>}}
-    assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255>>) == {:ok, {@max_hyper_int, <<>>}}
+
+    assert HyperInt.decode(<<127, 255, 255, 255, 255, 255, 255, 255>>) ==
+             {:ok, {@max_hyper_int, <<>>}}
 
     assert HyperInt.decode("0") == {:error, :invalid}
     assert HyperInt.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:error, :invalid}

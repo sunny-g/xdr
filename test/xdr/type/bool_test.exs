@@ -1,10 +1,12 @@
 defmodule XDR.Type.BoolTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.Bool
   alias XDR.Type.Int
 
   test "length" do
-    assert Bool.length === 4
+    assert Bool.length() === 4
   end
 
   test "new" do

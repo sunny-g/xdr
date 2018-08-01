@@ -7,36 +7,37 @@ defmodule XDR.Type.Optional do
     Base,
     Bool,
     Union,
-    Void,
+    Void
   }
 
-  defmacro __using__(for: for) do
+  defmacro __using__(for: optional_type) do
     quote do
       @behaviour XDR.Type.Base
 
       @type t :: nil | any
-      @type for :: module
-      @type xdr :: Base.xdr
+      @type type :: module
+      @type xdr :: Base.xdr()
 
-      use Union, spec: [
+      use Union,
         switch: Bool,
         cases: [
-          true:   :type,
-          false:  Void,
+          true: :type,
+          false: Void
         ],
         attributes: [
-          type:   unquote(for),
-        ],
-      ]
+          type: unquote(optional_type)
+        ]
 
       def length, do: :variable
 
-      @spec new(val :: t) :: {:ok, val :: t} | {:error, reason :: Base.error}
+      @spec new(val :: t) :: {:ok, val :: t} | {:error, reason :: Base.error()}
       def new(nil), do: {:ok, nil}
+
       def new(val) do
         case super({true, val}) do
           {:ok, {true, val}} ->
             {:ok, val}
+
           {:error, reason} ->
             {:error, reason}
         end
@@ -46,23 +47,25 @@ defmodule XDR.Type.Optional do
       def valid?(nil), do: super(false)
       def valid?(val), do: super({true, val})
 
-      @spec encode(val :: t) :: {:ok, xdr :: xdr} | {:error, reason :: Base.error}
+      @spec encode(val :: t) :: {:ok, xdr :: xdr} | {:error, reason :: Base.error()}
       def encode(nil), do: super(false)
       def encode(val), do: super({true, val})
 
-      @spec decode(xdr :: xdr) :: {:ok, {val :: t, rest :: Base.xdr}} | {:error, reason :: atom}
+      @spec decode(xdr :: xdr) :: {:ok, {val :: t, rest :: Base.xdr()}} | {:error, reason :: atom}
       def decode(xdr) do
         case super(xdr) do
           {:ok, {false, rest}} ->
             {:ok, {nil, rest}}
+
           {:ok, {{true, val}, rest}} ->
             {:ok, {val, rest}}
+
           {:error, reason} ->
             {:error, reason}
         end
       end
 
-      defoverridable [length: 0, new: 1, valid?: 1, encode: 1, decode: 1]
+      defoverridable length: 0, new: 1, valid?: 1, encode: 1, decode: 1
     end
   end
 end

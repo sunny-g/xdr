@@ -4,7 +4,7 @@ defmodule XDR.Type.Bool do
   """
 
   @type t :: boolean
-  @type xdr :: Enum.xdr
+  @type xdr :: Enum.xdr()
 
-  use XDR.Type.Enum, spec: [false: 0, true: 1]
+  use XDR.Type.Enum, false: 0, true: 1
 end
