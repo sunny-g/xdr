@@ -14,7 +14,7 @@ defmodule XDR.Type.Optional do
     quote do
       @behaviour XDR.Type.Base
 
-      @type t :: nil | any
+      @type t :: nil | unquote(optional_type).t()
       @type type :: module
       @type xdr :: Base.xdr()
 

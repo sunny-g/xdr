@@ -18,8 +18,7 @@ defmodule XDR.Util do
 
   require XDR.Util.Macros
 
-  def required_padding(0), do: 0
-  def required_padding(4), do: 0
+  def required_padding(len) when XDR.Util.Macros.calculate_padding(len) == 0, do: 0
 
   def required_padding(len) when is_integer(len) do
     4 - XDR.Util.Macros.calculate_padding(len)
