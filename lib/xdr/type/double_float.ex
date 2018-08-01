@@ -18,6 +18,16 @@ defmodule XDR.Type.DoubleFloat do
 
   defguard is_xdr_double(double) when is_float(double) or is_integer(double)
 
+  defmacro __using__(_ \\ []) do
+    quote do
+      defdelegate length(), to: unquote(__MODULE__)
+      defdelegate new(double \\ 0.0), to: unquote(__MODULE__)
+      defdelegate valid?(double), to: unquote(__MODULE__)
+      defdelegate encode(double), to: unquote(__MODULE__)
+      defdelegate decode(double), to: unquote(__MODULE__)
+    end
+  end
+
   @doc false
   def length, do: @length
 

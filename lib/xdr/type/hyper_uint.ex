@@ -22,6 +22,16 @@ defmodule XDR.Type.HyperUint do
   defguard is_hyper_uint(uint)
            when is_integer(uint) and uint >= @min_hyper_uint and uint <= @max_hyper_uint
 
+  defmacro __using__(_ \\ []) do
+    quote do
+      defdelegate length(), to: unquote(__MODULE__)
+      defdelegate new(hyper_uint \\ 0), to: unquote(__MODULE__)
+      defdelegate valid?(hyper_uint), to: unquote(__MODULE__)
+      defdelegate encode(hyper_uint), to: unquote(__MODULE__)
+      defdelegate decode(hyper_uint), to: unquote(__MODULE__)
+    end
+  end
+
   @doc false
   def length, do: @length
 

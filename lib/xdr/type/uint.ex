@@ -22,6 +22,16 @@ defmodule XDR.Type.Uint do
   defguard is_uint(uint)
            when is_integer(uint) and uint >= @min_uint and uint <= @max_uint
 
+  defmacro __using__(_ \\ []) do
+    quote do
+      defdelegate length(), to: unquote(__MODULE__)
+      defdelegate new(uint \\ 0), to: unquote(__MODULE__)
+      defdelegate valid?(uint), to: unquote(__MODULE__)
+      defdelegate encode(uint), to: unquote(__MODULE__)
+      defdelegate decode(uint), to: unquote(__MODULE__)
+    end
+  end
+
   @doc false
   def length, do: @length
 
