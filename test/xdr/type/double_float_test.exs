@@ -1,13 +1,15 @@
 defmodule XDR.Type.DoubleFloatTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.DoubleFloat
 
   test "length" do
-    assert DoubleFloat.length === 8
+    assert DoubleFloat.length() === 8
   end
 
   test "new" do
-    assert DoubleFloat.new === {:ok, 0.0}
+    assert DoubleFloat.new() === {:ok, 0.0}
     assert DoubleFloat.new(0) === {:ok, 0}
     assert DoubleFloat.new(0.0) === {:ok, 0.0}
     assert DoubleFloat.new(1.0) === {:ok, 1.0}
@@ -26,7 +28,7 @@ defmodule XDR.Type.DoubleFloatTest do
     assert DoubleFloat.valid?(0) == true
     assert DoubleFloat.valid?(-1) == true
     assert DoubleFloat.valid?(1.0) == true
-    assert DoubleFloat.valid?(100000000.0) == true
+    assert DoubleFloat.valid?(100_000_000.0) == true
 
     assert DoubleFloat.valid?(:infinity) == false
     assert DoubleFloat.valid?(nil) == false
@@ -43,7 +45,10 @@ defmodule XDR.Type.DoubleFloatTest do
 
   test "decode" do
     assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0.0, <<>>}}
-    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {0.0, <<0, 0, 0, 0>>}}
+
+    assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>) ==
+             {:ok, {0.0, <<0, 0, 0, 0>>}}
+
     assert DoubleFloat.decode(<<0, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {-0.0, <<>>}}
     assert DoubleFloat.decode(<<128, 0, 0, 0, 0, 0, 0, 0>>) == {:ok, {-0.0, <<>>}}
     assert DoubleFloat.decode(<<63, 240, 0, 0, 0, 0, 0, 0>>) == {:ok, {1.0, <<>>}}

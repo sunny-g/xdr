@@ -4,8 +4,8 @@ defmodule XDR.Type.Base do
   """
 
   @type t :: any
-  @type xdr :: <<_ :: _ * 32>>
-  @type error :: atom | String.t
+  @type xdr :: <<_::_*32>>
+  @type error :: atom | String.t()
 
   @doc """
   Returns the expected length (in bytes) of an XDR-encoded binary of this type (sans padding)

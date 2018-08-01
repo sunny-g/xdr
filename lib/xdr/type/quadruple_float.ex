@@ -11,7 +11,7 @@ defmodule XDR.Type.QuadrupleFloat do
   Quadruple-precision float
   """
   @type t :: number
-  @type xdr :: Base.xdr
+  @type xdr :: Base.xdr()
 
   @length 16
 
@@ -19,7 +19,7 @@ defmodule XDR.Type.QuadrupleFloat do
   def length, do: @length
 
   @doc false
-  @spec new(float :: t) :: {:ok, float :: t} | {:error, :invalid}
+  @spec new(float :: t) :: {:ok, float :: t} | {:error, :invalid | :not_implemented}
   def new(float \\ 0.0)
   def new(_), do: {:error, :not_implemented}
 
@@ -28,10 +28,12 @@ defmodule XDR.Type.QuadrupleFloat do
   def valid?(_), do: false
 
   @doc false
-  @spec encode(float :: t) :: {:ok, xdr :: xdr} | {:error, :invalid}
+  @spec encode(float :: t) :: {:ok, xdr :: xdr} | {:error, :invalid | :not_implemented}
   def encode(_), do: {:error, :not_implemented}
 
   @doc false
-  @spec decode(xdr :: xdr) :: {:ok, {float :: t, rest :: Base.xdr}} | {:error, :invalid | :out_of_bounds}
+  @spec decode(xdr :: xdr) ::
+          {:ok, {float :: t, rest :: Base.xdr()}}
+          | {:error, :invalid | :out_of_bounds | :not_implemented}
   def decode(_), do: {:error, :not_implemented}
 end

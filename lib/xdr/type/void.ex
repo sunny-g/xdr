@@ -11,7 +11,7 @@ defmodule XDR.Type.Void do
   Void type
   """
   @type t :: nil
-  @type xdr :: <<_ :: _ * 32>>
+  @type xdr :: Base.xdr()
 
   @doc false
   def length, do: 0
@@ -37,8 +37,8 @@ defmodule XDR.Type.Void do
   @doc """
   Decodes an empty binary to nil
   """
-  @spec decode(xdr :: <<>>) :: {:ok, {native :: t, rest :: Base.xdr}} | {:error, :invalid}
+  @spec decode(xdr :: <<>>) :: {:ok, {native :: t, rest :: Base.xdr()}} | {:error, :invalid}
   def decode(<<>>), do: {:ok, {nil, <<>>}}
-  def decode(<<rest :: binary>>), do: {:ok, {nil, rest}}
+  def decode(<<rest::binary>>), do: {:ok, {nil, rest}}
   def decode(_), do: {:error, :invalid}
 end

@@ -1,38 +1,40 @@
 defmodule XDR.Type.VariableArrayTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.VariableArray
   alias XDR.Type.Int
 
   defmodule XDR.Type.VariableArrayTest.Max0 do
-    use VariableArray, spec: [max_len: 0, type: Int]
+    use VariableArray, max_len: 0, type: Int
   end
 
   defmodule XDR.Type.VariableArrayTest.Max1 do
-    use VariableArray, spec: [max_len: 1, type: Int]
+    use VariableArray, max_len: 1, type: Int
   end
 
   defmodule XDR.Type.VariableArrayTest.Max2 do
-    use VariableArray, spec: [max_len: 2, type: Int]
+    use VariableArray, max_len: 2, type: Int
   end
 
   defmodule XDR.Type.VariableArrayTest.InvalidLength do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "invalid length", fn ->
-      use XDR.Type.VariableArray, spec: [max_len: -1, type: Int]
-    end
+    assert_compile_time_raise(RuntimeError, "invalid length", fn ->
+      use XDR.Type.VariableArray, max_len: -1, type: Int
+    end)
   end
 
   alias XDR.Type.VariableArrayTest.{Max0, Max1, Max2}
 
   test "length" do
-    assert Max0.length === :variable
-    assert Max1.length === :variable
-    assert Max2.length === :variable
+    assert Max0.length() === :variable
+    assert Max1.length() === :variable
+    assert Max2.length() === :variable
   end
 
   test "new" do
-    assert Max0.new == {:ok, []}
+    assert Max0.new() == {:ok, []}
     assert Max0.new([]) == {:ok, []}
     assert Max1.new([]) == {:ok, []}
     assert Max1.new([0]) == {:ok, [0]}

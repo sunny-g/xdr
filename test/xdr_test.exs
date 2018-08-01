@@ -1,8 +1,6 @@
 defmodule XDRTest do
-  use ExUnit.Case
-  doctest XDR
+  @moduledoc false
 
-  test "the truth" do
-    assert 1 + 1 == 2
-  end
+  use ExUnit.Case, async: true
+  doctest XDR
 end

@@ -1,5 +1,7 @@
 defmodule XDR.Type.VariableOpaqueTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   require Math
   alias XDR.Type.VariableOpaque
 
@@ -22,22 +24,22 @@ defmodule XDR.Type.VariableOpaqueTest do
   defmodule XDR.Type.VariableOpaqueTest.ExceedMax do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "max length too large", fn ->
+    assert_compile_time_raise(RuntimeError, "max length too large", fn ->
       use XDR.Type.VariableOpaque, max_len: Math.pow(2, 32)
-    end
+    end)
   end
 
   alias XDR.Type.VariableOpaqueTest.{Len1, Len2, Len3, Len4}
 
   test "length" do
-    assert Len1.length === :variable
-    assert Len2.length === :variable
-    assert Len3.length === :variable
-    assert Len4.length === :variable
+    assert Len1.length() === :variable
+    assert Len2.length() === :variable
+    assert Len3.length() === :variable
+    assert Len4.length() === :variable
   end
 
   test "new" do
-    assert Len1.new == {:ok, <<>>}
+    assert Len1.new() == {:ok, <<>>}
     assert Len1.new(<<>>) == {:ok, <<>>}
     assert Len1.new(<<0>>) == {:ok, <<0>>}
     assert Len1.new(<<1>>) == {:ok, <<1>>}

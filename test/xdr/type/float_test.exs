@@ -1,13 +1,15 @@
 defmodule XDR.Type.FloatTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.Float
 
   test "length" do
-    assert Float.length === 4
+    assert Float.length() === 4
   end
 
   test "new" do
-    assert Float.new === {:ok, 0.0}
+    assert Float.new() === {:ok, 0.0}
     assert Float.new(0) === {:ok, 0}
     assert Float.new(0.0) === {:ok, 0.0}
     assert Float.new(1.0) === {:ok, 1.0}
@@ -26,7 +28,7 @@ defmodule XDR.Type.FloatTest do
     assert Float.valid?(0) == true
     assert Float.valid?(-1) == true
     assert Float.valid?(1.0) == true
-    assert Float.valid?(100000.0) == true
+    assert Float.valid?(100_000.0) == true
 
     assert Float.valid?(:infinity) == false
     assert Float.valid?(nil) == false

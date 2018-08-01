@@ -1,5 +1,7 @@
 defmodule XDR.Type.QuadrupleFloatTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.QuadrupleFloat
 
   test "valid?" do
@@ -11,6 +13,7 @@ defmodule XDR.Type.QuadrupleFloatTest do
   end
 
   test "decode" do
-    assert QuadrupleFloat.encode(<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>) == {:error, :not_implemented}
+    assert QuadrupleFloat.encode(<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>) ==
+             {:error, :not_implemented}
   end
 end

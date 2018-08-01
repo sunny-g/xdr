@@ -1,5 +1,7 @@
 defmodule XDR.Type.FixedOpaqueTest do
-  use ExUnit.Case
+  @moduledoc false
+
+  use ExUnit.Case, async: true
   alias XDR.Type.FixedOpaque
 
   defmodule XDR.Type.FixedOpaqueTest.Len1 do
@@ -21,18 +23,18 @@ defmodule XDR.Type.FixedOpaqueTest do
   defmodule XDR.Type.FixedOpaqueTest.ExceedMax do
     import CompileTimeAssertions
 
-    assert_compile_time_raise RuntimeError, "invalid length", fn ->
+    assert_compile_time_raise(RuntimeError, "invalid length", fn ->
       use XDR.Type.FixedOpaque, len: -1
-    end
+    end)
   end
 
   alias XDR.Type.FixedOpaqueTest.{Len1, Len2, Len3, Len5}
 
   test "length" do
-    assert Len1.length === 1
-    assert Len2.length === 2
-    assert Len3.length === 3
-    assert Len5.length === 5
+    assert Len1.length() === 1
+    assert Len2.length() === 2
+    assert Len3.length() === 3
+    assert Len5.length() === 5
   end
 
   test "new" do
