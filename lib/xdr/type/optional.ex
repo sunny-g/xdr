@@ -11,7 +11,11 @@ defmodule XDR.Type.Optional do
   }
 
   defmacro __using__(for: optional_type) do
+    required = quote do: require(unquote(optional_type))
+
     quote do
+      unquote(required)
+
       @type t :: nil | unquote(optional_type).t()
       @type type :: module
       @type xdr :: Base.xdr()

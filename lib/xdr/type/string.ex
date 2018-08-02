@@ -21,8 +21,8 @@ defmodule XDR.Type.String do
            when is_bitstring(string) and is_integer(max_len) and max_len <= @max_len and
                   byte_size(string) <= max_len
 
-  defmacro __using__(opts \\ []) do
-    max_len = Keyword.get(opts, :max_len, @max_len)
+  defmacro __using__(spec) do
+    max_len = Keyword.get(spec, :max_len, @max_len)
 
     if max_len > @max_len do
       raise "max length too large"

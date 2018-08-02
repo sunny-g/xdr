@@ -24,9 +24,9 @@ defmodule XDR.Type.VariableArray do
   @len_size 32
   @max_len Math.pow(2, 32) - 1
 
-  defmacro __using__(opts \\ []) do
-    max = Keyword.get(opts, :max_len, @max_len)
-    type = Keyword.get(opts, :type)
+  defmacro __using__(spec) do
+    max = Keyword.get(spec, :max_len, @max_len)
+    type = Keyword.get(spec, :type)
 
     if not (is_integer(max) and max >= 0 and max <= @max_len) do
       raise "invalid length"
