@@ -4,7 +4,7 @@ defmodule XDR.Type.Enum do
   """
 
   require OK
-  import XDR.Util.Macros
+  import XDR.Util.Guards
   alias XDR.Type.{Base, Int}
 
   @typedoc """

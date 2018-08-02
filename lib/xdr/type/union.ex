@@ -31,7 +31,7 @@ defmodule XDR.Type.Union do
 
   defmacro __using__(spec) do
     switch_module = get_switch(spec)
-    required = quote do: require unquote(switch_module)
+    required = quote do: require(unquote(switch_module))
 
     quote do
       unquote(required)

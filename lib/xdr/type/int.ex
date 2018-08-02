@@ -5,7 +5,7 @@ defmodule XDR.Type.Int do
 
   require Math
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @behaviour XDR.Type.Base
 
@@ -21,16 +21,6 @@ defmodule XDR.Type.Int do
 
   defguard is_int(int)
            when is_integer(int) and int >= @min_int and int <= @max_int
-
-  defmacro __using__(_ \\ []) do
-    quote do
-      defdelegate length(), to: unquote(__MODULE__)
-      defdelegate new(int \\ 0), to: unquote(__MODULE__)
-      defdelegate valid?(int), to: unquote(__MODULE__)
-      defdelegate encode(int), to: unquote(__MODULE__)
-      defdelegate decode(int), to: unquote(__MODULE__)
-    end
-  end
 
   @doc false
   def length, do: @length

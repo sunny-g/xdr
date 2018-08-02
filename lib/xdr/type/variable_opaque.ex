@@ -5,7 +5,7 @@ defmodule XDR.Type.VariableOpaque do
 
   require Math
   require OK
-  import XDR.Util.Macros
+  import XDR.Util.Guards
   alias XDR.Type.{Base, FixedOpaque, Uint}
 
   @typedoc """

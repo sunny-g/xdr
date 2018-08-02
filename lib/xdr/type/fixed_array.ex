@@ -4,7 +4,7 @@ defmodule XDR.Type.FixedArray do
   """
 
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @typedoc """
   A binary of any length

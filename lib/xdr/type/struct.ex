@@ -9,12 +9,14 @@ defmodule XDR.Type.Struct do
   defmacro __using__(spec) do
     keys = Keyword.keys(spec)
     values = Keyword.values(spec)
-    required = for module <- values do
-      quote do: require unquote(module)
-    end
+
+    required =
+      for module <- values do
+        quote do: require(unquote(module))
+      end
 
     quote do
-      import XDR.Util.Macros
+      import XDR.Util.Guards
       unquote(required)
 
       @behaviour XDR.Type.Base
@@ -80,11 +82,11 @@ defmodule XDR.Type.Struct do
   # HELPERS
   # ---------------------------------------------------------------------------#
 
-  def valid?(struct, {key, module}),
-    do:
-      struct
-      |> Map.get(key)
-      |> module.valid?
+  def valid?(struct, {key, module}) do
+    struct
+    |> Map.get(key)
+    |> module.valid?
+  end
 
   def encode(_struct, {_, _}, {:error, reason}), do: {:error, reason}
 

@@ -5,7 +5,7 @@ defmodule XDR.Type.VariableArray do
 
   require Math
   require OK
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   alias XDR.Type.{
     Base,

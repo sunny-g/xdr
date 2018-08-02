@@ -4,7 +4,7 @@ defmodule XDR.Type.Float do
   """
 
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @behaviour XDR.Type.Base
 
@@ -17,16 +17,6 @@ defmodule XDR.Type.Float do
   @length 4
 
   defguard is_xdr_float(float) when is_float(float) or is_integer(float)
-
-  defmacro __using__(_ \\ []) do
-    quote do
-      defdelegate length(), to: unquote(__MODULE__)
-      defdelegate new(float \\ 0.0), to: unquote(__MODULE__)
-      defdelegate valid?(float), to: unquote(__MODULE__)
-      defdelegate encode(float), to: unquote(__MODULE__)
-      defdelegate decode(float), to: unquote(__MODULE__)
-    end
-  end
 
   @doc false
   def length, do: @length

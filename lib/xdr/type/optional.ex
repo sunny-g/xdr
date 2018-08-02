@@ -12,8 +12,6 @@ defmodule XDR.Type.Optional do
 
   defmacro __using__(for: optional_type) do
     quote do
-      @behaviour XDR.Type.Base
-
       @type t :: nil | unquote(optional_type).t()
       @type type :: module
       @type xdr :: Base.xdr()
