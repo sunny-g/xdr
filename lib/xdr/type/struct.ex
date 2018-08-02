@@ -8,9 +8,14 @@ defmodule XDR.Type.Struct do
 
   defmacro __using__(spec) do
     keys = Keyword.keys(spec)
+    values = Keyword.values(spec)
+    required = for module <- values do
+      quote do: require unquote(module)
+    end
 
     quote do
       import XDR.Util.Macros
+      unquote(required)
 
       @behaviour XDR.Type.Base
 

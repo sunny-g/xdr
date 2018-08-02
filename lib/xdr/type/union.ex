@@ -30,7 +30,12 @@ defmodule XDR.Type.Union do
   @type attributes :: [{atom, switch}]
 
   defmacro __using__(spec) do
+    switch_module = get_switch(spec)
+    required = quote do: require unquote(switch_module)
+
     quote do
+      unquote(required)
+
       @behaviour XDR.Type.Base
 
       def length, do: :union
