@@ -3,7 +3,6 @@ defmodule XDR.Type.HyperUint do
   RFC 4506, Section 4.5 - Unsigned Hyper Integer
   """
 
-  require Math
   alias XDR.Type.Base
   import XDR.Util.Guards
 
@@ -16,7 +15,7 @@ defmodule XDR.Type.HyperUint do
   @type xdr :: <<_::_*64>>
 
   @min_hyper_uint 0
-  @max_hyper_uint Math.pow(2, 64) - 1
+  @max_hyper_uint 18_446_744_073_709_551_615
   @length 8
 
   defguard is_hyper_uint(uint)

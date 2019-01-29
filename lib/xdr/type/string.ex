@@ -3,7 +3,6 @@ defmodule XDR.Type.String do
   RFC 4506, Section 4.11 - String
   """
 
-  require Math
   alias XDR.Type.Base
   alias XDR.Type.VariableOpaque
 
@@ -15,7 +14,7 @@ defmodule XDR.Type.String do
   @type max :: VariableOpaque.max()
   @type decode_error :: VariableOpaque.decode_error()
 
-  @max_len Math.pow(2, 32) - 1
+  @max_len 2_147_483_647
 
   defguard is_xdr_string(string, max_len)
            when is_bitstring(string) and is_integer(max_len) and max_len <= @max_len and
