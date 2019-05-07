@@ -2,7 +2,6 @@ defmodule XDR.Type.VariableOpaqueTest do
   @moduledoc false
 
   use ExUnit.Case, async: true
-  require Math
   alias XDR.Type.VariableOpaque
 
   defmodule XDR.Type.VariableOpaqueTest.Len1 do
@@ -25,7 +24,7 @@ defmodule XDR.Type.VariableOpaqueTest do
     import CompileTimeAssertions
 
     assert_compile_time_raise(RuntimeError, "max length too large", fn ->
-      use XDR.Type.VariableOpaque, max_len: Math.pow(2, 32)
+      use XDR.Type.VariableOpaque, max_len: 4_294_967_296
     end)
   end
 

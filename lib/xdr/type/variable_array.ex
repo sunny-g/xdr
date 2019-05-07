@@ -3,9 +3,7 @@ defmodule XDR.Type.VariableArray do
   RFC 4506, Section 4.13 - Variable-length Array
   """
 
-  require Math
-  require OK
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   alias XDR.Type.{
     Base,
@@ -22,11 +20,11 @@ defmodule XDR.Type.VariableArray do
   @type decode_error :: {:error, :invalid | :xdr_too_small}
 
   @len_size 32
-  @max_len Math.pow(2, 32) - 1
+  @max_len 4_294_967_295
 
-  defmacro __using__(opts \\ []) do
-    max = Keyword.get(opts, :max_len, @max_len)
-    type = Keyword.get(opts, :type)
+  defmacro __using__(spec) do
+    max = Keyword.get(spec, :max_len, @max_len)
+    type = Keyword.get(spec, :type)
 
     if not (is_integer(max) and max >= 0 and max <= @max_len) do
       raise "invalid length"
@@ -74,10 +72,9 @@ defmodule XDR.Type.VariableArray do
 
   def encode(array, type, max) do
     if valid?(array, type, max) do
-      OK.with do
-        len = length(array)
-        encoded <- FixedArray.encode(array, type, len)
-        encoded_len <- Uint.encode(len)
+      with len = length(array),
+           {:ok, encoded} <- FixedArray.encode(array, type, len),
+           {:ok, encoded_len} <- Uint.encode(len) do
         {:ok, encoded_len <> encoded}
       end
     else

@@ -3,14 +3,20 @@ defmodule XDR.Type.Struct do
   RFC 4506, Section 4.14 - Structure
   """
 
-  require OK
   alias XDR.Type.Base
 
   defmacro __using__(spec) do
     keys = Keyword.keys(spec)
+    values = Keyword.values(spec)
+
+    required =
+      for module <- values do
+        quote do: require(unquote(module))
+      end
 
     quote do
-      import XDR.Util.Macros
+      import XDR.Util.Guards
+      unquote(required)
 
       @behaviour XDR.Type.Base
 
@@ -75,21 +81,16 @@ defmodule XDR.Type.Struct do
   # HELPERS
   # ---------------------------------------------------------------------------#
 
-  def valid?(struct, {key, module}),
-    do:
-      struct
-      |> Map.get(key)
-      |> module.valid?
+  def valid?(struct, {key, module}) do
+    struct
+    |> Map.get(key)
+    |> module.valid?
+  end
 
   def encode(_struct, {_, _}, {:error, reason}), do: {:error, reason}
 
   def encode(struct, {key, module}, {:ok, curr_xdr}) do
-    OK.with do
-      xdr <-
-        struct
-        |> Map.get(key)
-        |> module.encode
-
+    with {:ok, xdr} <- struct |> Map.get(key) |> module.encode do
       {:ok, curr_xdr <> xdr}
     end
   end
@@ -97,8 +98,7 @@ defmodule XDR.Type.Struct do
   def decode({_, _}, {:error, reason}), do: {:error, reason}
 
   def decode({key, module}, {:ok, {struct, xdr}}) do
-    OK.with do
-      {val, rest} <- module.decode(xdr)
+    with {:ok, {val, rest}} <- module.decode(xdr) do
       {:ok, {Map.put(struct, key, val), rest}}
     end
   end

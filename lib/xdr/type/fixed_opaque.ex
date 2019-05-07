@@ -5,7 +5,7 @@ defmodule XDR.Type.FixedOpaque do
 
   alias XDR.Type.Base
   alias XDR.Util
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @typedoc """
   A binary of any length

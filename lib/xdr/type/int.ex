@@ -3,9 +3,8 @@ defmodule XDR.Type.Int do
   RFC 4506, Section 4.1 - Integer
   """
 
-  require Math
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @behaviour XDR.Type.Base
 
@@ -15,8 +14,8 @@ defmodule XDR.Type.Int do
   @type t :: -2_147_483_648..2_147_483_647
   @type xdr :: Base.xdr()
 
-  @min_int -Math.pow(2, 31)
-  @max_int Math.pow(2, 31) - 1
+  @min_int -2_147_483_648
+  @max_int 2_147_483_647
   @length 4
 
   defguard is_int(int)

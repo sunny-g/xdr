@@ -3,7 +3,6 @@ defmodule XDR.Type.String do
   RFC 4506, Section 4.11 - String
   """
 
-  require Math
   alias XDR.Type.Base
   alias XDR.Type.VariableOpaque
 
@@ -15,14 +14,14 @@ defmodule XDR.Type.String do
   @type max :: VariableOpaque.max()
   @type decode_error :: VariableOpaque.decode_error()
 
-  @max_len Math.pow(2, 32) - 1
+  @max_len 2_147_483_647
 
   defguard is_xdr_string(string, max_len)
            when is_bitstring(string) and is_integer(max_len) and max_len <= @max_len and
                   byte_size(string) <= max_len
 
-  defmacro __using__(opts \\ []) do
-    max_len = Keyword.get(opts, :max_len, @max_len)
+  defmacro __using__(spec) do
+    max_len = Keyword.get(spec, :max_len, @max_len)
 
     if max_len > @max_len do
       raise "max length too large"

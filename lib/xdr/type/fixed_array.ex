@@ -4,7 +4,7 @@ defmodule XDR.Type.FixedArray do
   """
 
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @typedoc """
   A binary of any length
@@ -14,7 +14,10 @@ defmodule XDR.Type.FixedArray do
   @type xdr :: Base.xdr()
   @type decode_error :: {:error, reason :: :invalid | :xdr_too_small}
 
-  defmacro __using__(len: len, type: type) do
+  defmacro __using__(spec) do
+    len = Keyword.get(spec, :len)
+    type = Keyword.get(spec, :type)
+
     if not (is_integer(len) and len >= 0) do
       raise "invalid length"
     end

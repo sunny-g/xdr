@@ -3,8 +3,6 @@ defmodule XDR.Type.Union do
   RFC 4506, Section 4.15 - Discriminated Union
   """
 
-  require OK
-  import OK, only: [~>>: 2]
   import XDR.Util
 
   alias XDR.Type.{
@@ -30,7 +28,12 @@ defmodule XDR.Type.Union do
   @type attributes :: [{atom, switch}]
 
   defmacro __using__(spec) do
+    switch_module = get_switch(spec)
+    required = quote do: require(unquote(switch_module))
+
     quote do
+      unquote(required)
+
       @behaviour XDR.Type.Base
 
       def length, do: :union
@@ -96,10 +99,8 @@ defmodule XDR.Type.Union do
     attribute_module = get_attribute(discriminant, spec)
 
     if valid?({discriminant, val}, spec) do
-      OK.with do
-        switch <- switch_module.encode(discriminant)
-        arm <- attribute_module.encode(val)
-
+      with {:ok, switch} <- switch_module.encode(discriminant),
+           {:ok, arm} <- attribute_module.encode(val) do
         {:ok, switch <> arm}
       end
     else
@@ -123,13 +124,9 @@ defmodule XDR.Type.Union do
       end
 
     if valid?(discriminant, spec) and not is_nil(case_module) do
-      OK.with do
-        switch <- switch_module.encode(discriminant)
-
-        arm <-
-          case_module.new()
-          ~>> case_module.encode()
-
+      with {:ok, switch} <- switch_module.encode(discriminant),
+           {:ok, val} <- case_module.new(),
+           {:ok, arm} <- case_module.encode(val) do
         {:ok, switch <> arm}
       end
     else
@@ -145,10 +142,8 @@ defmodule XDR.Type.Union do
   def decode(<<discriminant_xdr::binary-size(4), arm_xdr::binary>>, spec) do
     switch_module = get_switch(spec)
 
-    OK.with do
-      {discriminant, _} <- switch_module.decode(discriminant_xdr)
-      {arm, rest} <- decode_arm(discriminant, arm_xdr, spec)
-
+    with {:ok, {discriminant, _}} <- switch_module.decode(discriminant_xdr),
+         {:ok, {arm, rest}} <- decode_arm(discriminant, arm_xdr, spec) do
       if is_nil(arm) and arm_xdr === rest do
         {:ok, {discriminant, rest}}
       else

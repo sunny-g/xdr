@@ -4,7 +4,7 @@ defmodule XDR.Type.Float do
   """
 
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @behaviour XDR.Type.Base
 

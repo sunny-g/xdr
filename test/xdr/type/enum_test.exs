@@ -5,21 +5,21 @@ defmodule XDR.Type.EnumTest do
   alias XDR.Type.Enum
   alias XDR.Type.Int
 
-  defmodule XDR.Type.EnumTest.DummyEnum do
+  defmodule DummyEnum do
     use Enum,
       red: 0,
       green: 1,
       evenMoreGreen: 3
   end
 
-  defmodule XDR.Type.EnumTest.NegativeEnum do
+  defmodule NegativeEnum do
     use Enum,
       zero: 0,
       one: -1,
       two: -2
   end
 
-  defmodule XDR.Type.EnumTest.InvalidSpec do
+  defmodule InvalidSpec do
     import CompileTimeAssertions
 
     assert_compile_time_raise(RuntimeError, "Enum spec must be a keyword list", fn ->
@@ -27,15 +27,13 @@ defmodule XDR.Type.EnumTest do
     end)
   end
 
-  defmodule XDR.Type.EnumTest.ExceedMax do
+  defmodule ExceedMax do
     import CompileTimeAssertions
 
     assert_compile_time_raise(RuntimeError, "all Enum values must be numbers", fn ->
       use XDR.Type.Enum, a: "a"
     end)
   end
-
-  alias XDR.Type.EnumTest.{DummyEnum, NegativeEnum}
 
   test "length" do
     assert DummyEnum.length() === 4

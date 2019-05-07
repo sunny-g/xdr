@@ -2,9 +2,7 @@ defmodule XDR.Type.Enum do
   @moduledoc """
   RFC 4506, Section 4.3 - Enumeration
   """
-
-  require OK
-  import XDR.Util.Macros
+  import XDR.Util.Guards
   alias XDR.Type.{Base, Int}
 
   @typedoc """
@@ -16,13 +14,13 @@ defmodule XDR.Type.Enum do
   @type decode_error :: {:error, :invalid_xdr | :invalid_enum}
   @type encode_error :: {:error, :invalid | :invalid_name | :invalid_enum}
 
-  defmacro __using__(opts) do
+  defmacro __using__(spec) do
     # TODO: update this to statically compile spec into pattern-matched methods
-    if not Keyword.keyword?(opts) do
+    if not Keyword.keyword?(spec) do
       raise "Enum spec must be a keyword list"
     end
 
-    if Enum.any?(opts, fn
+    if Enum.any?(spec, fn
          {_, {:-, _, [v]}} -> not is_number(v)
          {_, v} -> not is_number(v)
        end) do
@@ -33,10 +31,10 @@ defmodule XDR.Type.Enum do
       @behaviour XDR.Type.Base
 
       defdelegate length, to: unquote(__MODULE__)
-      def new(name), do: unquote(__MODULE__).new(name, unquote(opts))
-      def valid?(name), do: unquote(__MODULE__).valid?(name, unquote(opts))
-      def encode(name), do: unquote(__MODULE__).encode(name, unquote(opts))
-      def decode(name), do: unquote(__MODULE__).decode(name, unquote(opts))
+      def new(name), do: unquote(__MODULE__).new(name, unquote(spec))
+      def valid?(name), do: unquote(__MODULE__).valid?(name, unquote(spec))
+      def encode(name), do: unquote(__MODULE__).encode(name, unquote(spec))
+      def decode(name), do: unquote(__MODULE__).decode(name, unquote(spec))
     end
   end
 
@@ -88,9 +86,7 @@ defmodule XDR.Type.Enum do
   def decode(_, enum) when not is_list(enum), do: {:error, :invalid_enum}
 
   def decode(xdr, enum) do
-    OK.with do
-      {val, rest} <- Int.decode(xdr)
-
+    with {:ok, {val, rest}} <- Int.decode(xdr) do
       case Enum.find(enum, &Kernel.===(elem(&1, 1), val)) do
         {k, _} -> {:ok, {k, rest}}
         nil -> {:error, :invalid_enum}

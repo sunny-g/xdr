@@ -4,7 +4,7 @@ defmodule XDR.Type.DoubleFloat do
   """
 
   alias XDR.Type.Base
-  import XDR.Util.Macros
+  import XDR.Util.Guards
 
   @behaviour XDR.Type.Base
 
@@ -16,7 +16,8 @@ defmodule XDR.Type.DoubleFloat do
 
   @length 8
 
-  defguard is_xdr_double(double) when is_float(double) or is_integer(double)
+  defguard is_xdr_double(double)
+           when is_float(double) or is_integer(double)
 
   @doc false
   def length, do: @length
