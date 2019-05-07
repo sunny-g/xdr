@@ -3,8 +3,6 @@ defmodule XDR.Type.VariableOpaque do
   RFC 4506, Section 4.10 - Variable-length Opaque Data
   """
 
-  require Math
-  require OK
   import XDR.Util.Guards
   alias XDR.Type.{Base, FixedOpaque, Uint}
 
@@ -23,7 +21,7 @@ defmodule XDR.Type.VariableOpaque do
            | :invalid_padding}
 
   @len_size 32
-  @max Math.pow(2, 32) - 1
+  @max 4_294_967_295
 
   defguard is_valid_variable_opaque(opaque, max)
            when is_binary(opaque) and is_integer(max) and max <= @max and byte_size(opaque) <= max
@@ -70,10 +68,9 @@ defmodule XDR.Type.VariableOpaque do
   def encode(opaque, max) when not is_valid_variable_opaque(opaque, max), do: {:error, :invalid}
 
   def encode(opaque, _) do
-    OK.with do
-      len = byte_size(opaque)
-      encoded <- FixedOpaque.encode(opaque, len)
-      encoded_len <- Uint.encode(len)
+    with len = byte_size(opaque),
+         {:ok, encoded} <- FixedOpaque.encode(opaque, len),
+         {:ok, encoded_len} <- Uint.encode(len) do
       {:ok, encoded_len <> encoded}
     end
   end

@@ -2,11 +2,10 @@ defmodule XDR.Type.HyperUintTest do
   @moduledoc false
 
   use ExUnit.Case, async: true
-  require Math
   alias XDR.Type.HyperUint
 
   @min_hyper_uint 0
-  @max_hyper_uint Math.pow(2, 64) - 1
+  @max_hyper_uint 18_446_744_073_709_551_615
 
   test "length" do
     assert HyperUint.length() === 8

@@ -2,11 +2,10 @@ defmodule XDR.Type.IntTest do
   @moduledoc false
 
   use ExUnit.Case, async: true
-  require Math
   alias XDR.Type.Int
 
-  @min_int -Math.pow(2, 31)
-  @max_int Math.pow(2, 31) - 1
+  @min_int -2_147_483_648
+  @max_int 2_147_483_647
 
   test "length" do
     assert Int.length() === 4

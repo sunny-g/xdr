@@ -4,10 +4,7 @@ defmodule XDR.Mixfile do
   @name    :xdr
   @version "0.2.0"
 
-  @deps [
-    {:math, "~> 0.3.0"},
-    {:ok,   github: "sunny-g/ok"},
-  ]
+  @deps []
 
   @dev_deps [
     {:credo,          "~> 0.8", only: [:dev, :test], runtime: false},
